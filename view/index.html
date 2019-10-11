@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+    <!-- JS (load angular, ui-router, and our custom js file) -->
+    <script src="http://code.angularjs.org/1.2.13/angular.js"></script>
+     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script> 
+    <script src="/app.js"></script>
+</head>
+
+<!-- apply our angular app to our site -->
+<body ng-app="myModule">
+
+        <li><a ui-sref="schools">schools</a></li>
+        <li><a ui-sref="district">district</a></li>
+<!-- MAIN CONTENT -->
+
+<div class="container">
+    <div ui-view>
+</div>
+
+<div>
+ 
+</div>
+
+</body>
+</html>
