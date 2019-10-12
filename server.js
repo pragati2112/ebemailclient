@@ -1,13 +1,12 @@
 const express=require('express');
 let email=require('./app/model/email.js');
 const mongoose=require('mongoose');
-const bodyparser=require('body-parser ')
+const bodyparser=require('body-parser')
 
 var app=express();
-app.listen(8888,()=>console.log("server is running on 4202"));
+app.listen(8888,()=>console.log("server is running on 8888"));
 
-
-app.use(express.static(__dirname,+'./app/public'));
+// app.use(express.static(__dirname,+'./app/public'));
 
 mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},function(err,conn) {
     if(!err){
@@ -18,47 +17,47 @@ mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},fu
    }
 });
  
- /* api for handle the send request */
- 
-app.post('api/send',bodyparser.json(),function(req,res){
+ /* api for handle the send request */ 
+app.post('/api/send',bodyparser.json(),function(req,res){
     var allowedProperties = ['from','to','cc','bcc','body','_created','_error','_sent','_sendGrid',
                              '_error','_lastModified' ];                            
     var thisEmail = req.body;
       var existingEmail = email.find({ _id:thisEmail._id},function(err,existingEmail){
           if(!err){
             if(existingEmail){
-                 res.json(existingEmail); 
-            }else{
+                if(existingEmail._sent){
+                    //res.send({status:"This email is alreay sent"})
+                    console.log("This mail is already sent ");
+                    res.json(existingEmail+"hey yo");
+                }
+                 res.json(existingEmail+"hey"); 
+            }
+            else{
                 existingEmail = new email({});  
                 for (var property in thisEmail) {
                     if (allowedProperties.indexOf(property) != -1) {
                       existingEmail[property] = thisEmail[property];
                     }
-                  }
-            }
-            if(existingEmail._sent){
-                //res.send({status:"This email is alreay sent"})
-                console.log("This mail is already sent ");
-                res.json(existingEmail);
-            }else{
-                //first save the email               
-                existingEmail.save()
-                .then( (mail) =>{
-                    console.log(mail);
-                    console.log(existingEmail);
-                    console.log("this email is now saved in databse ")
+                  }               
+                    //first save the email               
+                    existingEmail.save()
+                    .then( (mail) =>{
+                        console.log(mail);
+                        console.log(existingEmail);
+                        console.log("this email is now saved in databse ")
+                        })
+                        .catch(err =>{console.log(err);
                     })
-                    .catch(err =>{console.log(err);
-                })
+                      
                 //send the email now
-                
+
             }
           }
       })           
 })
 
   /* api for save and update email objects */
-app.post('api/save',bodyparser.json(),function(req,res){
+app.post('/api/save',bodyparser.json(),function(req,res){
       var allowedProperties = ['from','to','cc','bcc','body','_created','_error','_sent','_sendGrid', 
                                '_error','_lastModified' ];         
       var thisEmail = req.body;
@@ -66,6 +65,7 @@ app.post('api/save',bodyparser.json(),function(req,res){
       if(!err){
         if(existingEmail){
             for (var property in thisEmail) {
+                // assign the upadate email to existing email
                 if (allowedProperties.indexOf(property) != -1) {
                   existingEmail[property] = thisEmail[property];
                 }
@@ -83,7 +83,7 @@ app.post('api/save',bodyparser.json(),function(req,res){
         }
         else{
             thisEmail._lastModified = moment().toDate();
-            //  inserting new email in saved for later 
+            //  assign  new email to existing email to  saved for later 
             for (var property in thisEmail) {
                 if (allowedProperties.indexOf(property) != -1) {
                   existingEmail[property] = thisEmail[property];
@@ -104,6 +104,16 @@ app.post('api/save',bodyparser.json(),function(req,res){
      }
      })
 })
+
+///  api for successfully delivered mails 
+ app.get('/api/sent',function(req,res){      
+     email.find({_error:false},function(err,sentEmails){
+         if(!err){
+             res.json(sentEmails);
+         }
+     })
+ })
+
 
 /* const saveEmail=new email({
     from:req.body.thisEmail.from,

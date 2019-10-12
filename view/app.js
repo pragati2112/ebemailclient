@@ -70,12 +70,6 @@ myapp.config(function($stateProvider,$uiRouterProvider){
             templateUrl:"sent.html",
             controller:'sentController',
         })
-
-
-
-
-
-
 });
 
 
