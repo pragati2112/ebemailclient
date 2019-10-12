@@ -1,24 +1,30 @@
 //console.log("App.js loaded");
-var myapp = angular.module('myModule',['ui.router']);
-myapp.controller('myController',function($scope,$http){
+var myapp = angular.module('myModule',['ui.router'],['ui-notification']);
+myapp.controller('myController',function($scope,$http,Notification){
     console.log("myController loaded");
-    function compose(){
+    $scope.send = function(thisEmail){
         $http({
             method:'POST',
             url:'http://localhost:8888/api/send'
         }).then(function(response)
         {
             console.log(response);
-            $scope.emails = response.data.docs;
+            // $scope.emails = response.data.docs;
         });
     };
-    compose();
- 
+    //send();
+    $scope.save=  function save(){
+    $scope.saveemail = function () {
+    $http.post('/save', { thisEmail:$scope.thisEmail })
+            .success(onSuccess)
+            .error(onError);
+    Notification.success('Saved succesfully');
+    };
+   }
+   save();
    
 });
 myapp.controller('draftsController',function($scope,$http, $stateParams){
-    // var district = $stateParams.district;
-    // console.log(district);
     console.log("draftsController loaded");
     function draftemails(){  
         $http({
@@ -34,7 +40,7 @@ myapp.controller('draftsController',function($scope,$http, $stateParams){
     draftemails();
 });
 
-myapp.controller('sentController',function($scope,$http, $stateParams){
+myapp.controller('sentController',function($scope,$http){
     console.log("sentController loaded");
     function sentemails(){  
         $http({
@@ -49,11 +55,9 @@ myapp.controller('sentController',function($scope,$http, $stateParams){
     };
     sentemails();
 });
-myapp.config(function($stateProvider,$uiRouterProvider){ 
-    $uiRouterProvider.otherwise('/send',{
-        templateUrl:'compose.html',
-        controller:'myController',
-    })  
+myapp.config(function($stateProvider,$urlRouterProvider){ 
+    $urlRouterProvider.otherwise('/send');
+      
     $stateProvider
         .state('send',{
             url:'/send',

@@ -8,28 +8,119 @@
        <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
        <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
        <script src = "https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+       <link rel="stylesheet" href="angular-ui-notification.min.css">
+       <script src="angular-ui-notification.min.js"></script>
+          
        <script type = "text/javascript">    
           angular.module('myModule', ['ngMaterial'])
        </script>
     </head>
   <style>
+.div{
+   padding:20px;
+   width:600px;
+   height:550px;
+   background-color: bisque;
+   border:1px solid crimson;
+   margin-left: 300px; 
+   display:flex;
+   justify-content: space-around;
+}
+.a{
+   width:500px;
+   height:100px;
+}
 
+.d{ 
+   height:70px;
+ 
+}
+.aa
+{
+   height:70px;
+}
+.bb
+{
+   width:420px;
+}
   </style>
 
   <body ng-app = "myModule" ng-cloak>
   
   
     <header>
-       <h2> Compose </h2>
+      <h2>WELCOME!</h2>
     <header>
+     <div class="container div" layout="row" >
+   
+<div flex="25">
+  <div layout="column" >
+     <div class="aa" layout="column" layout-align="center center">FROM:</div>
+     <div class="aa" layout="column" layout-align="center center" >TO:</div>
+     <div class="aa" layout="column" layout-align="center center">CC:</div>
+     <div class="aa" layout="column" layout-align="center center">BCC:</div>
+     <div class="aa" layout="column" layout-align="center center">SUBJECT:</div>
+     <div class="aa" layout="column" layout-align="center center">TEXT:</div>
+    </div >
+</div> 
+<div flex="75">
+    <div layout="column">
+    <div class="d" layout="row" layout-align="start center">
+        <input type="text" id="from" class="bb" ng-model="thisEmail.from" />
+    </div>
+    <div class="d" layout="row" layout-align="start center"> 
+       <input type="text" id="to" class="bb"  ng-model="thisEmail.to" />
+    </div>
+    <div class="d" layout="row" layout-align="start center">
+        <input type="text" id="cc" class="bb"  ng-model="thisEmail.cc">
+   </div>
+    <div class="d" layout="row" layout-align="start center"> 
+       <input type="text" id="bcc" class="bb" ng-model="thisEmail.bcc">
+    </div>
+    <div class="d" layout="row" layout-align="start center"> 
+       <input type="text" id="subject" class="bb"  ng-model="thisEmail.subject">
+    </div>
+    <div class="d" layout="row" layout-align="start center"> 
+       <input type="text" class="a" id="body"  ng-model="thisEmail.body">
+    </div>
+    <div class="d" layout="row" layout-align="start center">
+    <button type="submit" value="Submit"  (click)="saveemail()" class="b">SAVE</button> </br>
+    <button class="b" (click)="send()">SEND</button>
+   </div>
+   </div>
+  </div>
+
+ 
+
+
+
+
+<!-- 
+
+
+    <form ng-submit="saveemail()" >
+            <label  for="from" class="b">FROM: </label>
+            <input type="text" id="from" class="d" ng-model="thisEmail.from" /> <br />  </br>
+         
+            <label for="to" class="b">TO:</label>
+                <input type="text" id="to" class="d"  ng-model="thisEmail.to" /> <br />  </br>
+         
+            <label for="cc" class="b">CC:</label> 
+                <input type="text" id="cc" class="d"  ng-model="thisEmail.cc"> <br />  </br>
+
+           <label for="bcc" class="b" >BCC:</label> 
+                <input type="text" id="bcc" class="d"  ng-model="thisEmail.bcc"> <br />  </br>
+            
+           <label for="subject" class="b">SUBJECT:</label> 
+                <input type="text" id="subject" class="d"  ng-model="thisEmail.subject"> <br />  </br>
+
+           <label for="body" class="b">TEXT:</label> 
+                <input type="text" class="a" id="body" ng-model="thisEmail.body"> <br />   </br>   
+        -->
      
-
-
-    
-    <footer class="c">
-      Thankyou!
-    <footer>
-
+    <!-- </form> -->
+   </div>
+   
  </body>
  </html>
  
