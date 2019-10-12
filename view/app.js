@@ -2,60 +2,80 @@
 var myapp = angular.module('myModule',['ui.router']);
 myapp.controller('myController',function($scope,$http){
     console.log("myController loaded");
-    function loadSchools(){
+    function compose(){
         $http({
-            method:'GET',
-            url:'http://localhost:4202/api/schools'
+            method:'POST',
+            url:'http://localhost:8888/api/send'
         }).then(function(response)
         {
             console.log(response);
-            $scope.schools = response.data.docs;
+            $scope.emails = response.data.docs;
         });
     };
-    loadSchools();
-    function loaddetails(){  
-        $http({
-            method:'DELETE',
-            url:'http://localhost:4202/api/schools/'+district,
-          
-        }).then(function(response)
-        {
-            console.log(response);
-            $scope.details = response.data.docs;
-        });
-    };
-    //loaddetails();
+    compose();
+ 
+   
 });
-myapp.controller('districtController',function($scope,$http, $stateParams){
-    var district = $stateParams.district;
-    console.log(district);
-    console.log("districtController loaded");
-    function loaddetails(){  
+myapp.controller('draftsController',function($scope,$http, $stateParams){
+    // var district = $stateParams.district;
+    // console.log(district);
+    console.log("draftsController loaded");
+    function draftemails(){  
         $http({
             method:'GET',
-            url:'http://localhost:4202/api/schools/' + district,
+            url:'http://localhost:8888/api/drafts',
           
         }).then(function(response)
         {
             console.log(response);
-            $scope.details = response.data.docs;
+            $scope.emails = response.data.docs;
         });
     };
-    loaddetails();
+    draftemails();
 });
 
-myapp.config(function($stateProvider){   
+myapp.controller('sentController',function($scope,$http, $stateParams){
+    console.log("sentController loaded");
+    function sentemails(){  
+        $http({
+            method:'GET',
+            url:'http://localhost:8888/api/sent',
+          
+        }).then(function(response)
+        {
+            console.log(response);
+            $scope.emails = response.data.docs;
+        });
+    };
+    sentemails();
+});
+myapp.config(function($stateProvider,$uiRouterProvider){ 
+    $uiRouterProvider.otherwise('/send',{
+        templateUrl:'compose.html',
+        controller:'myController',
+    })  
     $stateProvider
-        .state('schools',{
-            url:'/schools',
-            templateUrl:"schools.html",
+        .state('send',{
+            url:'/send',
+            templateUrl:"compose.html",
             controller:'myController',
         })
-        .state('district',{
-            url:'/schools/:district',
-            templateUrl:"district.html",
-            controller:'districtController',
+        .state('drafts',{
+            url:'/drafts',
+            templateUrl:"drafts.html",
+            controller:'draftsController',
         })
+         .state('sent',{
+            url:'/sent',
+            templateUrl:"sent.html",
+            controller:'sentController',
+        })
+
+
+
+
+
+
 });
 
 
