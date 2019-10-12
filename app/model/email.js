@@ -37,7 +37,7 @@ var emailSchema = mongoose.Schema({
     subject: {type: String, required: true},
     body: {type: String, required: true},
     _created: {type: Date, default: Date.now},
-    _send: {type: Date},
+    _sent: {type: Date},
     _lastModified: {type: Date},
     _sendGrid: Schema.Types.Mixed,
     _error: {type: Boolean}, 

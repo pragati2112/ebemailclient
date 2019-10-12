@@ -1,18 +1,15 @@
 const express=require('express');
-const morgan=require('morgan');
-let schoolModel=require('./mongoose');
+let email=require('./app/model/email.js');
 const mongoose=require('mongoose');
+const bodyparser=require('body-parser ')
+
 var app=express();
-app.listen(4202,()=>console.log("server is running on 4202"));
-app.use(morgan('dev'));
+app.listen(8888,()=>console.log("server is running on 4202"));
 
-/* app.get('/app.js',(req,res)=>{
-    console.log('I am here');
-   res.sendFile(__dirname + '/index.html');
-}); */
-app.use(express.static(__dirname));
 
-mongoose.connect( 'mongodb://localhost:27017/mongodb-101',{useNewUrlParser:true},function(err,conn) {
+app.use(express.static(__dirname,+'./app/public'));
+
+mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},function(err,conn) {
     if(!err){
         console.log("database connection establishded");
    }
@@ -20,88 +17,107 @@ mongoose.connect( 'mongodb://localhost:27017/mongodb-101',{useNewUrlParser:true}
        console.log("not established");
    }
 });
-
-
-
-app.get('/',function(req,res){
-    res.sendFile(__dirname + '/index.html');
-});
-
-////get all school names with the district names
-app.get('/api/schools',function(req,res){
-    schoolModel.aggregate([
-        {
-            $group:{
-                    _id:'$data.name-of-institution',
-                    district: {$addToSet: '$data.district'}
-                   }
-        },
-        {  
-            $project :{
-                      "name of school":"$_id",
-                      "district":"$district",_id:0
-                      }
-        }, 
-        ]).then(function(doc)
-        {  
-          res.send({ status:"true",docs:doc});      
-
-        })
-        .catch(function(err)
-        {
-            console.log(err);
-        });
-        
-  });
-
-
-   //list of the schools,email,postal-address and pincode according to their given district.  
-app.get('/api/schools/:district',function(req,res){
-    console.log(req.params.district);
-    var str=req.params.district;
-    if(str==str.toUpperCase())
-    {
-        var r=str;
-    }
-    else
-    {
-        var r= str.toUpperCase();
-    }
-   
-    schoolModel.aggregate([
-        {
-          $match:{
-                'data.district':r
-                 }
-        },
-        {
-         $group:{
-                _id:'$data.name-of-institution',
-                email:{$addToSet:'$data.email'},
-                postaladdress:{$addToSet:'$data.postal-address'},
-                pincode:{$addToSet:'$data.pin-code'}
+ 
+ /* api for handle the send request */
+ 
+app.post('api/send',bodyparser.json(),function(req,res){
+    var allowedProperties = ['from','to','cc','bcc','body','_created','_error','_sent','_sendGrid',
+                             '_error','_lastModified' ];                            
+    var thisEmail = req.body;
+      var existingEmail = email.find({ _id:thisEmail._id},function(err,existingEmail){
+          if(!err){
+            if(existingEmail){
+                 res.json(existingEmail); 
+            }else{
+                existingEmail = new email({});  
+                for (var property in thisEmail) {
+                    if (allowedProperties.indexOf(property) != -1) {
+                      existingEmail[property] = thisEmail[property];
+                    }
+                  }
             }
-        },
-        {
-        $project :{
-                "name of school":"$_id",
-                "district":"$district",
-                "email":"$email",
-                "postaladdress":"$postaladdress",
-                "pincode":"$pincode",
-                _id:0
+            if(existingEmail._sent){
+                //res.send({status:"This email is alreay sent"})
+                console.log("This mail is already sent ");
+                res.json(existingEmail);
+            }else{
+                //first save the email               
+                existingEmail.save()
+                .then( (mail) =>{
+                    console.log(mail);
+                    console.log(existingEmail);
+                    console.log("this email is now saved in databse ")
+                    })
+                    .catch(err =>{console.log(err);
+                })
+                //send the email now
+                
             }
-        },   
-    ]).then(function(doc)
-    {  
+          }
+      })           
+})
 
-     res.send({ status:"true",docs:doc});      
-       
-    })
-    .catch(function(err)
-    {
-        console.log(err);
-    });
+  /* api for save and update email objects */
+app.post('api/save',bodyparser.json(),function(req,res){
+      var allowedProperties = ['from','to','cc','bcc','body','_created','_error','_sent','_sendGrid', 
+                               '_error','_lastModified' ];         
+      var thisEmail = req.body;
+      var existingEmail = email.find({ _id:thisEmail._id},function(err,existingEmail){
+      if(!err){
+        if(existingEmail){
+            for (var property in thisEmail) {
+                if (allowedProperties.indexOf(property) != -1) {
+                  existingEmail[property] = thisEmail[property];
+                }
+              }
+              existingEmail._lastModified = moment().toDate();
+              // upadating existing email
+              existingEmail.save()
+              .then( (mail) =>{
+                  console.log(mail);
+                  res.json(existingEmail)
+                  console.log("this email is now updated in database")
+                  })
+                  .catch(err =>{console.log(err);
+              })
+        }
+        else{
+            thisEmail._lastModified = moment().toDate();
+            //  inserting new email in saved for later 
+            for (var property in thisEmail) {
+                if (allowedProperties.indexOf(property) != -1) {
+                  existingEmail[property] = thisEmail[property];
+                }
+              }
+            existingEmail.save()
+            .then( (mail) =>{
+                res.json(existingEmail);
+                console.log(mail);
+                console.log("this email is now saved for later in database")
+                })
+                .catch(err =>{console.log(err);
+            })
+        }
+     }
+     else{
+         console.log(err);
+     }
+     })
+})
 
- });
-
+/* const saveEmail=new email({
+    from:req.body.thisEmail.from,
+    to:req.body.thisEmail.to,
+    cc:req.body.thisEmail.cc,
+    bcc:req.body.thisEmail.bcc,
+    subject:req.body.thisEmail.subject,
+    body:req.body.thisEmail.body 
+ }) */
+/* 
+ from:thisEmail.from,
+ to:thisEmail.to,
+ cc:thisEmail.cc,
+ bcc:thisEmail.bcc,
+ subject:thisEmail.subject,
+ body:thisEmail.body,                    
+ _created = moment().toDate() */
