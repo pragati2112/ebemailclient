@@ -34,12 +34,12 @@ var emailSchema = mongoose.Schema({
         },
         name: {type: String},
     }],
-    subject: {type: String, required: true},
-    body: {type: String, required: true},
+    subject: {type: String},
+    text: {type: String, required: true},
     _created: {type: Date, default: Date.now},
     _sent: {type: Date},
     _lastModified: {type: Date},
-    _sendGrid: Schema.Types.Mixed,
+    _sendGrid: [Schema.Types.Mixed],
     _error: {type: Boolean}, 
 });
 module.exports = mongoose.model('emails', emailSchema); 
