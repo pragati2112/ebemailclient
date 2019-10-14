@@ -1,33 +1,71 @@
-//console.log("App.js loaded");
-var myapp = angular.module('myModule',['ui.router'],['ui-notification']);
-myapp.controller('myController',function($scope,$http,Notification){
+
+console.log("App.js loaded");
+var myapp = angular.module('myModule',['ui.router', 'ui-notification', 'ngMaterial',]);
+//console.log("myModule loaded");
+myapp.controller('myController',function($scope,$http,Notification, $stateParams){
+
+    console.log($stateParams);
     console.log("myController loaded");
+    $scope.thisEmail = {
+        from: "",
+        to: [
+            {
+                name: "",
+                email: ""
+            },
+        ],
+        cc: [
+            {
+                name: "",
+                email: ""
+            },
+        ],
+        bcc: [
+            {
+                name: "",
+                email: ""
+            },
+        ],
+        subject: "",
+        body: "",
+    };
+
+    if($stateParams.thisEmail){
+        $scope.thisEmail = $stateParams.thisEmail;
+    
+    }
     $scope.send = function(thisEmail){
+        console.log(thisEmail);
         $http({
             method:'POST',
-            url:'http://localhost:8888/api/send'
+            url:'http://localhost:8888/api/send',
+            body: thisEmail,
         }).then(function(response)
         {
             console.log(response);
-            // $scope.emails = response.data.docs;
+         
         });
+        
     };
-    //send();
-    $scope.save=  function save(){
-    $scope.saveemail = function () {
-    $http.post('/save', { thisEmail:$scope.thisEmail })
-            .success(onSuccess)
-            .error(onError);
-    Notification.success('Saved succesfully');
-    };
-   }
-   save();
-   
+    // send();
+      
+        $scope.saveemail = function (thisEmail) {
+            $http({
+                method:'POST',
+                url:'http://localhost:8888/api/save',
+                body: thisEmail,
+            })
+            .then(function(response)
+            {
+                console.log(response);
+            });
+            Notification('Saved succesfully');
+        };
 });
-myapp.controller('draftsController',function($scope,$http, $stateParams){
+myapp.controller('draftsController',function($scope,$http,$state){
     console.log("draftsController loaded");
     function draftemails(){  
-        $http({
+        $http({ 
             method:'GET',
             url:'http://localhost:8888/api/drafts',
           
@@ -38,7 +76,38 @@ myapp.controller('draftsController',function($scope,$http, $stateParams){
         });
     };
     draftemails();
+
+$scope.open=function(email)
+{    
+    var thisEmail = {
+        from: "",
+        to: [
+            {
+                name: "",
+                email: ""
+            },
+        ],
+        cc: [
+            {
+                name: "",
+                email: ""
+            },
+        ],
+        bcc: [
+            {
+                name: "",
+                email: ""
+            },
+        ],
+        subject: "",
+        body: "",
+    };
+    $state.go('send', {thisEmail: thisEmail });
+}
+
 });
+
+
 
 myapp.controller('sentController',function($scope,$http){
     console.log("sentController loaded");
@@ -57,21 +126,23 @@ myapp.controller('sentController',function($scope,$http){
 });
 myapp.config(function($stateProvider,$urlRouterProvider){ 
     $urlRouterProvider.otherwise('/send');
-      
     $stateProvider
         .state('send',{
             url:'/send',
-            templateUrl:"compose.html",
+            params: {
+                thisEmail: null,
+            },
+            templateUrl:"view/compose.html",
             controller:'myController',
         })
         .state('drafts',{
             url:'/drafts',
-            templateUrl:"drafts.html",
+            templateUrl:"view/drafts.html",
             controller:'draftsController',
         })
          .state('sent',{
             url:'/sent',
-            templateUrl:"sent.html",
+            templateUrl:"view/sent.html",
             controller:'sentController',
         })
 });

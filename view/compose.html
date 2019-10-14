@@ -1,22 +1,7 @@
 
 <html lang = "en" >
-    <head>
-       <link rel = "stylesheet"
-          href = "https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
-       <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-       <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
-       <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
-       <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
-       <script src = "https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
-       <link rel="stylesheet" href="angular-ui-notification.min.css">
-       <script src="angular-ui-notification.min.js"></script>
-          
-       <script type = "text/javascript">    
-          angular.module('myModule', ['ngMaterial'])
-       </script>
-    </head>
   <style>
-.div{
+.div{  
    padding:20px;
    width:600px;
    height:550px;
@@ -26,101 +11,115 @@
    display:flex;
    justify-content: space-around;
 }
-.a{
-   width:500px;
-   height:100px;
+
+
+.size
+{
+   width:95%;
+   height:70px;
 }
 
-.d{ 
-   height:70px;
- 
+.inputRow
+{  
+   padding: 10px 20px;
+
 }
-.aa
-{
-   height:70px;
+.neutralButton{
+   background: grey;
 }
-.bb
-{
-   width:420px;
+.positiveButton{
+   background: green;
 }
   </style>
+  <form name="myform">
+   <div class=" layoutcontainer width100 inputRow"  layout="row">
 
-  <body ng-app = "myModule" ng-cloak>  
-    <header>
-      <h2>WELCOME!</h2>
-    <header>
-     <div class="container div" layout="row" >
-   
-<div flex="25">
-  <div layout="column" >
-     <div class="aa" layout="column" layout-align="center center">FROM:</div>
-     <div class="aa" layout="column" layout-align="center center" >TO:</div>
-     <div class="aa" layout="column" layout-align="center center">CC:</div>
-     <div class="aa" layout="column" layout-align="center center">BCC:</div>
-     <div class="aa" layout="column" layout-align="center center">SUBJECT:</div>
-     <div class="aa" layout="column" layout-align="center center">TEXT:</div>
-    </div >
-</div> 
-<div flex="75">
-    <div layout="column">
-    <div class="d" layout="row" layout-align="start center">
-        <input type="text" id="from" class="bb" ng-model="thisEmail.from" />
-    </div>
-    <div class="d" layout="row" layout-align="start center"> 
-       <input type="text" id="to" class="bb"  ng-model="thisEmail.to" />
-    </div>
-    <div class="d" layout="row" layout-align="start center">
-        <input type="text" id="cc" class="bb"  ng-model="thisEmail.cc">
-   </div>
-    <div class="d" layout="row" layout-align="start center"> 
-       <input type="text" id="bcc" class="bb" ng-model="thisEmail.bcc">
-    </div>
-    <div class="d" layout="row" layout-align="start center"> 
-       <input type="text" id="subject" class="bb"  ng-model="thisEmail.subject">
-    </div>
-    <div class="d" layout="row" layout-align="start center"> 
-       <input type="text" class="a" id="body"  ng-model="thisEmail.body">
-    </div>
-    <div class="d" layout="row" layout-align="start center">
-    <button type="submit" value="Submit"  (click)="saveemail()" class="b">SAVE</button> </br>
-    <button class="b" (click)="send()">SEND</button>
-   </div>
-   </div>
+<div flex="25">FROM:</div>
+<div flex="75"> <input type="email" name="from" id="from"  ng-model="thisEmail.from" required />
+<span ng-show="myform.from.$touched && myform.from.$invalid">This is required.</span>
+
+</div>
+</div>
+
+ <div class="width100 inputRow"  layout="row" >
+ <div flex="25">TO:</div>
+ <div flex="75" layout="column" layout-align="start start" layout="column" layout-align="start start">
+
+ <div layout="row" layout-align="start start" class="width100" ng-repeat="to in thisEmail.to">
+
+ <div flex>
+ <input type="text" name="to.name" id="to.name"  ng-model="to.name" class="width100" required />
+ <span ng-show="myform.to.name.$touched && myform.to.name.$invalid">This is required.</span>
+ </div>
+ <div flex>
+ <input type="email" name="to.email" id="to.email"  ng-model="to.email" class="width100" required />
+ <span ng-show="myform.to.email.$touched && myform.to.email.$invalid">This is required.</span>
+
+</div>
+</div>
+</div>
+</div>       
+
+  <div class="width100 inputRow"  layout="row" >
+  <div flex="25">CC:</div>
+  <div flex="75" layout="column" layout-align="start start" layout="column" layout-align="start start">
+  <div layout="row" layout-align="start start" class="width100" ng-repeat="cc in thisEmail.cc">
+  <div flex>
+  <input type="text" name="cc.name" id="cc.name"  ng-model="cc.name" class="width100">
   </div>
-
- 
-
-
-
-
-<!-- 
-
-
-    <form ng-submit="saveemail()" >
-            <label  for="from" class="b">FROM: </label>
-            <input type="text" id="from" class="d" ng-model="thisEmail.from" /> <br />  </br>
-         
-            <label for="to" class="b">TO:</label>
-                <input type="text" id="to" class="d"  ng-model="thisEmail.to" /> <br />  </br>
-         
-            <label for="cc" class="b">CC:</label> 
-                <input type="text" id="cc" class="d"  ng-model="thisEmail.cc"> <br />  </br>
-
-           <label for="bcc" class="b" >BCC:</label> 
-                <input type="text" id="bcc" class="d"  ng-model="thisEmail.bcc"> <br />  </br>
-            
-           <label for="subject" class="b">SUBJECT:</label> 
-                <input type="text" id="subject" class="d"  ng-model="thisEmail.subject"> <br />  </br>
-
-           <label for="body" class="b">TEXT:</label> 
-                <input type="text" class="a" id="body" ng-model="thisEmail.body"> <br />   </br>   
-        -->
-     
-    <!-- </form> -->
+   <div flex>
+    <input type="email" name="cc.email" id="cc.email"  ng-model="cc.email" class="width100" />     
    </div>
+   </div>
+   </div>
+  </div>      
+             
+   <div class="width100 inputRow"  layout="row" >
+   <div flex="25">BCC:</div>
+   <div flex="75" layout="column" layout-align="start start" layout="column" layout-align="start start">
+    <div layout="row" layout-align="start start" class="width100" ng-repeat="bcc in thisEmail.bcc">
+    <div flex>
+    <input type="text" name="bcc.name" id="bcc.name"  ng-model="bcc.name" class="width100"/>
+    </div>
+   <div flex>
+   <input type="email" name="bcc.email" id="bcc.email"  ng-model="bcc.email" class="width100" />
+   </div>
+   </div>
+   </div>
+   </div>
+
+   <div class="width100 inputRow"  layout="row" >
+   <div flex="25">SUBJECT:</div>
+   <div flex="75"> <input type="text" name="subject" id="subject"  ng-model="thisEmail.subject"  class="width100" required />
+    <span ng-show="myform.subject.$touched && myform.subject.$invalid">This is required.</span>
+   </div>
+   </div>
+         
+   <div class="width100 inputRow"  layout="row" >
+    <div flex="25">BODY:</div>
+    <div flex="75" >
+    <input type="text" class="size" name="body" id="body" placeholder="Type your message!"  ng-model="thisEmail.body" required />
+    <span ng-show="myform.body.$touched && myform.body.$invalid">This is required.</span>
+    </div>
+   </div>                 
+
+
+<div layout="row" layout-align="start center">
+   <div flex>
+      <md-button class="neutralButton" ng-click="saveemail(thisEmail)" ng-disabled="myform.$invalid">
+         SAVE
+      </md-button>   
+   </div>
+   <div>
+      <md-button class="positiveButton"  ng-click="send(thisEmail)" ng-disabled="myform.$invalid">
+         SEND
+      </md-button>
+   </div>
+</div>
+
+</form>
    
- </body>
- </html>
+   
  
  
  

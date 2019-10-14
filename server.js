@@ -1,12 +1,15 @@
 const express=require('express');
+const morgan=require('Morgan')
 let email=require('./app/model/email.js');
 const mongoose=require('mongoose');
 const bodyparser=require('body-parser')
 
 var app=express();
 app.listen(8888,()=>console.log("server is running on 8888"));
+app.use(morgan('dev'));
+app.use(express.static(__dirname));
 
-// app.use(express.static(__dirname,+'./app/public'));
+
 
 mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},function(err,conn) {
     if(!err){
@@ -17,6 +20,12 @@ mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},fu
    }
 });
  
+
+app.get('/',function(req,res){
+  res.sendFile(__dirname + '/view/index.html');
+});
+
+
  /* api for handle the send request */ 
 app.post('/api/send',bodyparser.json(),function(req,res){
     var allowedProperties = ['from','to','cc','bcc','body','_created','_error','_sent','_sendGrid',
