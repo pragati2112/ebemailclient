@@ -1,19 +1,33 @@
 {
   "name": "project",
   "version": "1.0.0",
-  "description": "",
+  "description": "EB Email Client",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^6.4.0",
     "angular-ui-notification": "^0.3.6",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "moment": "^2.24.0",
     "mongodb": "^3.3.2",
     "mongoose": "^5.7.4",
-    "morgan": "^1.9.1"
-  }
+    "morgan": "^1.9.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pragati2112/ebemailclient.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/pragati2112/ebemailclient/issues"
+  },
+  "homepage": "https://github.com/pragati2112/ebemailclient#readme"
 }
