@@ -7,7 +7,9 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
     console.log($stateParams);
     console.log("myController loaded");
     $scope.thisEmail = {
-        from: "",
+        from: { 
+                email:""
+    },
         to: [
             {
                 name: "",
@@ -80,7 +82,9 @@ myapp.controller('draftsController',function($scope,$http,$state){
 $scope.open=function(email)
 {    
     var thisEmail = {
-        from: "",
+        from:{ 
+          email:""
+    },
         to: [
             {
                 name: "",
