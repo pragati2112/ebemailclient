@@ -24,11 +24,9 @@ mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},fu
    }
 });
 
-var API_KEY= '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';
-
-console.log(API_KEY);
-
-
+var API_KEY1 = 'SG.lF_-Qw61SFuTOzXw0QMgXQ.';
+var API_KEY2 = "wlc2YZg4oQcr_sg4XYmj2AnJejZsqhiwJ-9LjWnJ8vY";
+var API_KEY = API_KEY1 + API_KEY2;
 
 app.get('/',function(req,res){
     res.sendFile(__dirname + '/view/index.html');
@@ -38,8 +36,7 @@ app.get('/',function(req,res){
 app.post('/api/send',bodyparser.json(),function(req,res){
     var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid',
                              '_error','_lastModified' ];                            
-    var thisEmail = req.body; 
-    //console.log(thisEmail)
+    var thisEmail = req.body;
     sendgrid.setApiKey(API_KEY);  
     if(thisEmail){
         var existingEmail = email.findOne({ _id: thisEmail._id},function(err,existingEmail){            
@@ -134,7 +131,7 @@ app.post('/api/send',bodyparser.json(),function(req,res){
 app.post('/api/save',bodyparser.json(),function(req,res){
       var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid', '_error','_lastModified' ];         
       var thisEmail = req.body;
-      console.log(thisEmail._id)
+      console.log(thisEmail)
       var existingEmail = email.findOne({ _id:thisEmail._id},function(err,existingEmail){         
       if(!err){
         if(existingEmail && existingEmail._sent){

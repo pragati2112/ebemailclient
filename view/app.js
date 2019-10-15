@@ -1,5 +1,31 @@
 
 console.log("App.js loaded");
+function randomString(){
+    var verbs, nouns, adjectives, adverbs, preposition;
+    nouns = ["bird", "clock", "boy", "plastic", "duck", "teacher", "old lady", "professor", "hamster", "dog"];
+    verbs = ["kicked", "ran", "flew", "dodged", "sliced", "rolled", "died", "breathed", "slept", "killed"];
+    adjectives = ["beautiful", "lazy", "professional", "lovely", "dumb", "rough", "soft", "hot", "vibrating", "slimy"];
+    adverbs = ["slowly", "elegantly", "precisely", "quickly", "sadly", "humbly", "proudly", "shockingly", "calmly", "passionately"];
+    preposition = ["down", "into", "up", "on", "upon", "below", "above", "through", "across", "towards"];
+
+    function randGen() {
+      return Math.floor(Math.random() * 5);
+    }
+
+    function sentence() {
+      var rand1 = Math.floor(Math.random() * 10);
+      var rand2 = Math.floor(Math.random() * 10);
+      var rand3 = Math.floor(Math.random() * 10);
+      var rand4 = Math.floor(Math.random() * 10);
+      var rand5 = Math.floor(Math.random() * 10);
+      var rand6 = Math.floor(Math.random() * 10);
+      var content = "The " + adjectives[rand1] + " " + nouns[rand2] + " " + adverbs[rand3] + " " + verbs[rand4] + " because some " + nouns[rand1] + " " + adverbs[rand1] + " " + verbs[rand1] + " " + preposition[rand1] + " a " + adjectives[rand2] + " " + nouns[rand5] + " which, became a " + adjectives[rand3] + ", " + adjectives[rand4] + " " + nouns[rand6] + ".";
+      return content;
+    };
+    var thisString = sentence();
+    return thisString;
+};
+
 var myapp = angular.module('myModule',['ui.router', 'ui-notification', 'ngMaterial',]);
 //console.log("myModule loaded");
 myapp.controller('myController',function($scope,$http,Notification, $stateParams){
@@ -12,11 +38,15 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
     },
         to: [
             {
-                email: "",
-                name: "",
+                email: "a@b.com",
+                name: "AB",
+            },
+            {
+                email: "c@d.com",
+                name: "CD",
             },
         ],
-        cc: [
+        /* cc: [
             {
                 name: "",
                 email: ""
@@ -27,9 +57,9 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
                 name: "",
                 email: ""
             },
-        ],
-        subject: "",
-        text: "",
+        ], */
+        subject: randomString(),
+        text: randomString(),
     };
     if($stateParams.thisEmail){
         $scope.thisEmail = $stateParams.thisEmail;    
@@ -39,12 +69,13 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
         $http({
             method:'POST',
             url:'http://localhost:8888/api/send',
-            text: thisEmail,
+            data: thisEmail,
         }).then(function(response)
         {
             console.log(response);
          
         });
+       
         
     };
     // send();
@@ -53,14 +84,14 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
             $http({
                 method:'POST',
                 url:'http://localhost:8888/api/save',
-                text: thisEmail,
+                data: thisEmail,
             })
             .then(function(response)
             {
                 console.log(response);
             });
             console.log(thisEmail);
-            Notification('Saved succesfully');
+            // Notification('Saved succesfully');
         };
 });
 myapp.controller('draftsController',function($scope,$http,$state){
@@ -81,31 +112,6 @@ myapp.controller('draftsController',function($scope,$http,$state){
 
 $scope.open=function(thisEmail)
 {    
-    var thisEmail = {
-        from:{ 
-          email:""
-    },
-        to: [
-            {
-                name: "",
-                email: ""
-            },
-        ],
-        cc: [
-            {
-                name: "",
-                email: ""
-            },
-        ],
-        bcc: [
-            {
-                name: "",
-                email: ""
-            },
-        ],
-        subject: "",
-        text: "",
-    };
     $state.go('send', {thisEmail: thisEmail });
 }
 
