@@ -3,7 +3,6 @@ console.log("App.js loaded");
 var myapp = angular.module('myModule',['ui.router', 'ui-notification', 'ngMaterial',]);
 //console.log("myModule loaded");
 myapp.controller('myController',function($scope,$http,Notification, $stateParams){
-
     console.log($stateParams);
     console.log("myController loaded");
     $scope.thisEmail = {
@@ -27,19 +26,17 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
             },
         ],
         subject: "",
-        body: "",
+        text: "",
     };
-
     if($stateParams.thisEmail){
-        $scope.thisEmail = $stateParams.thisEmail;
-    
+        $scope.thisEmail = $stateParams.thisEmail;    
     }
     $scope.send = function(thisEmail){
         console.log(thisEmail);
         $http({
             method:'POST',
             url:'http://localhost:8888/api/send',
-            body: thisEmail,
+            text: thisEmail,
         }).then(function(response)
         {
             console.log(response);
@@ -53,7 +50,7 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
             $http({
                 method:'POST',
                 url:'http://localhost:8888/api/save',
-                body: thisEmail,
+                text: thisEmail,
             })
             .then(function(response)
             {
@@ -100,7 +97,7 @@ $scope.open=function(email)
             },
         ],
         subject: "",
-        body: "",
+        text: "",
     };
     $state.go('send', {thisEmail: thisEmail });
 }

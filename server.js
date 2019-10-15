@@ -1,12 +1,11 @@
 const express=require('express');
 const morgan=require('Morgan')
-let email=require('./app/model/email.js');
-let demo=require('./app/model/demo.js');
 const mongoose=require('mongoose');
 const bodyparser=require('body-parser');
-
-const moment=require('moment');
 const sendgrid=require("@sendgrid/mail");
+const moment=require('moment');
+let email=require('./app/model/email.js');
+const randomEmail=require('./random.js');
 
 
 var app=express();
@@ -14,9 +13,6 @@ app.use(morgan('dev'));
 app.use(bodyparser.json());
 app.listen(8888,()=>console.log("server is running on 8888"));
 app.use(morgan('dev'));
-app.use(express.static(__dirname));
-
-
 app.use(express.static(__dirname,+'./app/public'));
 
 mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},function(err,conn) {
@@ -27,42 +23,44 @@ mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},fu
        console.log("not established");
    }
 });
-var API_KEY ='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';
+var API_KEY1 ='SG.5c4iYPz8T82IZpDPg8h-Yw.'
+var API_KEY2= 'lf4gg6bisvcRZ_uB-m_W-gnTUKmsZCTyBp3H3kHfrqE';
+var API_KEY= API_KEY1+API_KEY2;
+var API_KEY= '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';
 
-function send_email(){
-    sendgrid.setApiKey(API_KEY);
-    const msg = {
-        to: 'vipulchaursiya@gmail.com',
-        from: 'vipulchaursiya@gmail.com',
-        subject: 'Sending with SendGrid is Fun',
-        text: 'and easy to do anywhere, even with Node.js',
-        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-    };
-    sendgrid.send(msg)
-    .then(function(msg){
-        console.log(" in then");
-        //set sent
-       // console.log(msg);
-    })
-    .catch(function(err){
-        //set error
-        console.log("in error");
-        console.log(err);
-    })
-}
-/* send_email(); */
- 
+console.log(API_KEY);
+
+        function generateMail(){    
+        var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid',
+            '_error','_lastModified' ]; 
+        var thisEmail= new email({})
+        console.log(randomEmail);
+        for (var property in randomEmail) {
+            if (allowedProperties.indexOf(property) != -1){
+                thisEmail[property] = randomEmail[property];
+            }
+        }
+        thisEmail.save()
+        .then( function(thisEmail){
+            console.log(thisEmail);      
+            console.log("this email is now saved in databse ")
+        })
+        .catch(function(err){
+            console.log(err);
+        }) 
+        }
+        /* generateMail(); */
 
 app.get('/',function(req,res){
-  res.sendFile(__dirname + '/view/index.html');
-});
-
+    res.sendFile(__dirname + '/view/index.html');
+})
 
  /* api for handle the send request */ 
 app.post('/api/send',function(req,res){
     var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid',
                              '_error','_lastModified' ];                            
     var thisEmail = req.body; 
+    //console.log(thisEmail)
     sendgrid.setApiKey(API_KEY);  
     if(thisEmail){
         var existingEmail = email.findOne({ _id: thisEmail._id},function(err,existingEmail){            
@@ -79,10 +77,10 @@ app.post('/api/send',function(req,res){
                             }
                         }
                         // now save the updated existing email in database
-                        existingEmail._lastModified=moment.toDate();         
+                        existingEmail._lastModified=moment().toDate();         
                         existingEmail.save()
                         .then(function(existingEmail){
-                            res.send(existingEmail);
+                           // res.json(existingEmail);
                             console.log("existing email saved with upadated mail in database")
                         })
                         // send the Email now
@@ -121,8 +119,7 @@ app.post('/api/send',function(req,res){
                     newEmail._created = moment().toDate();                                                      
                     newEmail.save()
                     .then( function(newEmail){
-                            console.log(newEmail);
-                           // res.json(newEmail);
+                            console.log(newEmail);                           
                             console.log("this email is now saved in databse ")
                     })
                     .catch(function(err){
@@ -148,8 +145,7 @@ app.post('/api/send',function(req,res){
                     })
                     .catch(function(err){
                         console.log(err);
-                    })  
-                                     
+                    })                                     
                 }
             }
            });
@@ -160,15 +156,14 @@ app.post('/api/save',function(req,res){
       var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid', '_error','_lastModified' ];         
       var thisEmail = req.body;
       console.log(thisEmail._id)
-      var existingEmail = email.findOne({ _id:thisEmail._id},function(err,existingEmail){
-          console.log(existingEmail);
+      var existingEmail = email.findOne({ _id:thisEmail._id},function(err,existingEmail){         
       if(!err){
         if(existingEmail && existingEmail._sent){
             //do nothing
             res.json(existingEmail);
         }else{ 
             if(existingEmail){
-
+                
             }else{
                 existingEmail = new email({});
             }
@@ -225,56 +220,25 @@ app.post('/api/save',function(req,res){
 })
 
 
-/* const saveEmail=new email({
-    from:req.body.thisEmail.from,
-    to:req.body.thisEmail.to,
-    cc:req.body.thisEmail.cc,
-    bcc:req.body.thisEmail.bcc,
-    subject:req.body.thisEmail.subject,
-    body:req.body.thisEmail.body 
- }) */
-/* 
- from:thisEmail.from,
- to:thisEmail.to,
- cc:thisEmail.cc,
- bcc:thisEmail.bcc,
- subject:thisEmail.subject,
- body:thisEmail.body,                    
- _created = moment().toDate() */
-
-
-/*  app.post('/api/demo',bodyparser.json(),function(req,res){
-    var thisDemo=req.body;    
-    var  existingDemo=demo.find({_id:thisDemo._id},function(err,existingDemo){
-        console.log(existingDemo);
-       if(!err){
-          if(existingDemo.length>0){
-              console.log("found exist email");
-              res.json(null)
-          }else{
-            console.log(thisDemo);
-            demos=new demo({
-                subject:thisDemo.subject  ,     
-                body:thisDemo.body
-            })
-            demos.save()
-            .then( (demos)=>{
-                console.log("demo saved");
-                console.log(demos)
-                res.json(demos);
-            })
-            .catch((err )=>{
-                console.log("demo not saved");
-                res.json("in demo not saved")
-                console.log(err);
-            })
-          } 
-       }
-       else{
-           console.log(err);
-       }
-   
+function send_email(){
+    sendgrid.setApiKey(API_KEY);
+    const msg = {
+        to: 'vipulchaursiya@gmail.com',
+        from: 'vipulchaursiya@gmail.com',
+        subject: 'Sending with SendGrid is Fun',
+        body: 'and easy to do anywhere, even with Node.js',
+        html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+    };
+    sendgrid.send(msg)
+    .then(function(msg){
+        console.log(" in then");
+        //set sent
+        console.log(msg);
     })
-  
- 
-}) */
+    .catch(function(err){
+        //set error
+        console.log("in error");
+        console.log(err);
+    })
+}
+/* send_email(); */
