@@ -67,12 +67,12 @@ myapp.controller('draftsController',function($scope,$http,$state){
     function draftemails(){  
         $http({ 
             method:'GET',
-            url:'http://localhost:8888/api/drafts',
+            url:'http://localhost:8888/api/draft',
           
         }).then(function(response)
         {
             console.log(response);
-            $scope.emails = response.data.docs;
+            $scope.emails = response.data.draftEmails;
         });
     };
     draftemails();
@@ -119,7 +119,7 @@ myapp.controller('sentController',function($scope,$http){
         }).then(function(response)
         {
             console.log(response);
-            $scope.emails = response.data.docs;
+            $scope.emails = response.data.sentEmails;
         });
     };
     sentemails();
@@ -135,8 +135,8 @@ myapp.config(function($stateProvider,$urlRouterProvider){
             templateUrl:"view/compose.html",
             controller:'myController',
         })
-        .state('drafts',{
-            url:'/drafts',
+        .state('draft',{
+            url:'/draft',
             templateUrl:"view/drafts.html",
             controller:'draftsController',
         })

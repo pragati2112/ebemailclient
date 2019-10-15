@@ -22,7 +22,7 @@
 .inputRow
 {  
    padding: 10px 20px;
-
+   border:1px solid black;
 }
 .neutralButton{
    background: grey;
@@ -32,12 +32,21 @@
 }
   </style>
   <form name="myform">
-   <div class=" layoutcontainer width100 inputRow"  layout="row">
 
+ <div class=" width100 inputRow"  layout="row">
 <div flex="25">FROM:</div>
-<div flex="75"> <input type="email" name="from" id="from"  ng-model="thisEmail.from" required />
-<span ng-show="myform.from.$touched && myform.from.$invalid">This is required.</span>
+<div flex="75" layout="column" layout-align="start start" layout="column" layout-align="start start">
+ <div layout="row" layout-align="start start" class="width100" ng-repeat="from in thisEmail.from">
 
+ <div flex>
+ <input type="text" name="from.name" id="from.name"  ng-model="from.name" class="width100" required />
+ <span ng-show="myform.from.name.$touched && myform.from.name.$invalid">This is required.</span>
+ </div>
+ <div flex>
+<input type="email" name="from.email" id="from.email"  ng-model="from.email" class="width100" required />
+<span ng-show="myform.from.email.$touched && myform.from.email.$invalid">This is required.</span>
+</div>
+</div>
 </div>
 </div>
 
