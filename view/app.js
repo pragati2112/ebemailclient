@@ -8,12 +8,13 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
     console.log("myController loaded");
     $scope.thisEmail = {
         from: { 
-                email:""
+                email:"",
+            
     },
         to: [
             {
+                email: "",
                 name: "",
-                email: ""
             },
         ],
         cc: [
@@ -29,7 +30,7 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
             },
         ],
         subject: "",
-        body: "",
+        text: "",
     };
 
     if($stateParams.thisEmail){
@@ -61,6 +62,7 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
             {
                 console.log(response);
             });
+            console.log(thisEmail);
             Notification('Saved succesfully');
         };
 });
@@ -73,13 +75,14 @@ myapp.controller('draftsController',function($scope,$http,$state){
           
         }).then(function(response)
         {
-            console.log(response);
-            $scope.emails = response.data.draftEmails;
+            //console.log(response);
+            console.log(response.data);
+            $scope.emails = response.data;
         });
     };
     draftemails();
 
-$scope.open=function(email)
+$scope.open=function(thisEmail)
 {    
     var thisEmail = {
         from:{ 
@@ -104,7 +107,7 @@ $scope.open=function(email)
             },
         ],
         subject: "",
-        body: "",
+        text: "",
     };
     $state.go('send', {thisEmail: thisEmail });
 }
@@ -123,7 +126,7 @@ myapp.controller('sentController',function($scope,$http){
         }).then(function(response)
         {
             console.log(response);
-            $scope.emails = response.data.sentEmails;
+            $scope.emails = response.data;
         });
     };
     sentemails();

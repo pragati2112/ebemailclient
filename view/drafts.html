@@ -1,10 +1,10 @@
 <div ng-repeat="email in emails">
    <div>
-  FROM: {{email.from}}
-  TO:  {{email.to}}
-  CC:  {{email.cc}}
-  BCC:  {{email.bcc}}
-  LAST OPENED:  {{email._lastModified}}
+ <div> FROM: {{email.from}}</div>
+ <div>  TO:  {{email.to}}</div>
+ <div>  CC:  {{email.cc}}</div>
+ <div> BCC:  {{email.bcc}}</div>
+ <div> LAST OPENED:  {{email._lastModified}}</div>
 <md-button ng-click="open()">OPEN IT</md-button>
    </div>
 </div>

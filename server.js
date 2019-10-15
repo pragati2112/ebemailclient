@@ -27,10 +27,11 @@ mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},fu
        console.log("not established");
    }
 });
-var API_KEY ='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';
+var API_KEY ='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';
 
 function send_email(){
     sendgrid.setApiKey(API_KEY);
+
     const msg = {
         to: 'vipulchaursiya@gmail.com',
         from: 'vipulchaursiya@gmail.com',
@@ -53,16 +54,17 @@ function send_email(){
 /* send_email(); */
  
 
-app.get('/',function(req,res){
+ app.get('/',function(req,res){
   res.sendFile(__dirname + '/view/index.html');
-});
+}); 
 
 
  /* api for handle the send request */ 
-app.post('/api/send',function(req,res){
+app.post('/api/send',bodyparser.json(),function(req,res){
     var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid',
                              '_error','_lastModified' ];                            
     var thisEmail = req.body; 
+    console.log(thisEmail);
     sendgrid.setApiKey(API_KEY);  
     if(thisEmail){
         var existingEmail = email.findOne({ _id: thisEmail._id},function(err,existingEmail){            
@@ -156,10 +158,10 @@ app.post('/api/send',function(req,res){
     }          
 });
   /* api for save and update email objects */
-app.post('/api/save',function(req,res){
+app.post('/api/save',bodyparser.json(),function(req,res){
       var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid', '_error','_lastModified' ];         
       var thisEmail = req.body;
-      console.log(thisEmail._id)
+      console.log(thisEmail);
       var existingEmail = email.findOne({ _id:thisEmail._id},function(err,existingEmail){
           console.log(existingEmail);
       if(!err){
