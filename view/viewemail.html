@@ -1,14 +1,3 @@
-  
-<!-- <div class=" width100 inputRow border"  layout="column" layout-align="start start" ng-repeat="email in emails">
-      <div>From:  {{email.from.email}} , Name:{{email.from.name}}</div> 
-      <div ng-repeat="to in email.to">To: {{to.email}} , Name:{{to.name}}</div>
-      <div ng-repeat="cc in email.cc">Cc:  {{cc.email}} , Name:{{cc.name}}</div> 
-      <div ng-repeat="bcc in email.bcc">Bcc: {{bcc.email}} , Name:{{bcc.name}}</div> 
-      <div>Subject: {{email.subject}}</div> 
-      <div>Text: {{email.text}}</div> 
-      <div>Sent Date:  {{email._sent}}</div>
-     
-      </div>   -->
 
       <style>
             .positiveButton1{
@@ -20,11 +9,14 @@
             }
             .padding
             {
-               padding:3px;
+               padding:10px;
+               height:30px;
             }
+            
             </style>
-           
-            <div class=" width100 inputRow border"  layout="column" layout-align="start start" ng-repeat="email in emails">
+            
+            
+            <div class=" width100 inputRow"  layout="column" layout-align="start start" ng-repeat="email in emails">
             <div class="width100 padding" layout="row" layout-align="start start">
             <div flex="10">From: </div>
             <div flex="90"> {{email.from.email}},Name:{{email.from.name}}</div>
@@ -35,6 +27,11 @@
             <div flex="90" ng-repeat="to in email.to"> {{to.email}},Name:{{to.name}}</div>
             </div>
             
+            <div class="width100 padding" layout="row" layout-align="start start">
+             <div flex="10">Sent Date:</div>
+             <div flex="80">{{email._sent | date:"medium"}}</div>
+             </div>
+        
             
             <div class="width100 padding" layout="row" layout-align="start start">
             <div flex="10" ng-repeat="cc in email.cc">Cc: </div>
@@ -51,13 +48,15 @@
              <div  flex="90" layout-align="start start">{{email.subject}}</div>
              </div>
             
+             <div layout="row" class="width100 padding" layout-align="start start">
+                    <div  flex="10">Text:</div>
+                    <div  flex="90" layout-align="start start">{{email.text}}</div>
+                    </div>
             
-            <div class="width100 padding" layout="row" layout-align="start start">
-            <div flex="10">Sent Date:</div>
-            <div flex="80">{{email._sent | date:"medium"}}</div>
+           
             <div flex="10" layout-align="end center"> 
-            <md-button class="positiveButton1" ng-click="view(email)">VIEW</md-button>
-            </div>
+                    <md-button class="positiveButton1" ng-click="back()">BACK</md-button>
+                    </div>
             </div>
             </div>
             

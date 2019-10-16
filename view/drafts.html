@@ -1,10 +1,52 @@
-<div ng-repeat="email in emails">
-   <div>
-  FROM: {{email.from}}
-  TO:  {{email.to}}
-  CC:  {{email.cc}}
-  BCC:  {{email.bcc}}
-  LAST OPENED:  {{email._lastModified}}
-<md-button ng-click="open()">OPEN IT</md-button>
-   </div>
+<style>
+.positiveButton1{
+   background: rgb(128, 76, 87);
+}
+.border
+{
+   border:1px solid rgb(112, 75, 75);
+}
+.padding
+{
+   padding:3px;
+}
+
+</style>
+
+
+<div class=" width100 inputRow border"  layout="column" layout-align="start start" ng-repeat="email in emails">
+<div class="width100 padding" layout="row" layout-align="start start">
+<div flex="10">From: </div>
+<div flex="90"> {{email.from.email}},Name:{{email.from.name}}</div>
+</div>
+
+<div class="width100 padding"layout="row" layout-align="start start">
+<div flex="10" ng-repeat="to in email.to">To:</div>
+<div flex="90" ng-repeat="to in email.to"> {{to.email}},Name:{{to.name}}</div>
+</div>
+
+
+<div class="width100 padding" layout="row" layout-align="start start">
+<div flex="10" ng-repeat="cc in email.cc">Cc: </div>
+ <div flex="90"ng-repeat="cc in email.cc"> {{cc.email}}{{cc.name}}</div>
+</div>
+
+<div class="width100 padding" layout="row" layout-align="start start">
+<div flex="10" ng-repeat="bcc in email.bcc">Bcc:</div>
+<div flex="90" ng-repeat="cc in email.cc">{{bcc.email}}{{bcc.name}}</div>
+</div>
+
+<div layout="row" class="width100 padding" layout-align="start start">
+ <div  flex="10">Subject:</div>
+ <div  flex="90" layout-align="start start">{{email.subject}}</div>
+ </div>
+
+
+<div class="width100 padding" layout="row" layout-align="start start">
+<div flex="10">Last saved:</div>
+<div flex="80">{{email._lastModified | date:"medium"}}</div>
+<div flex="10" layout-align="end center"> 
+<md-button class="positiveButton1" ng-click="open(email)">OPEN IT</md-button>
+</div>
+</div>
 </div>
