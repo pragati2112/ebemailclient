@@ -248,7 +248,6 @@ myapp.controller('sentController',function($scope,$http,$state,$stateParams){
       $scope.thisEmail = $stateParams.thisEmail;    
       $state.go('viewemail',{thisEmail:thisEmail});
   }
-});
 
 
 // myapp.controller('viewemailController',function($scope,$http,$state,$stateParams){
@@ -260,7 +259,8 @@ myapp.controller('sentController',function($scope,$http,$state,$stateParams){
   {
       $state.go('sent');
   }
- 
+});
+
 
 
  //Routing

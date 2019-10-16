@@ -19,18 +19,18 @@
      </div>
             
     <div class="width100 padding"layout="row" layout-align="start start">
-       <div flex="10" >To:</div>
+       <div flex="10" ng-repeat="to in email.to">To:</div>
        <div flex="90" ng-repeat="to in email.to"> {{to.email}},Name:{{to.name}}</div>
     </div>
             
             
     <div class="width100 padding" layout="row" layout-align="start start">
-       <div flex="10">Cc: </div>
+       <div flex="10" ng-repeat="to in email.cc">Cc: </div>
        <div flex="90"ng-repeat="cc in email.cc"> {{cc.email}}{{cc.name}}</div>
      </div>
             
     <div class="width100 padding" layout="row" layout-align="start start">
-       <div flex="10" >Bcc:</div>
+       <div flex="10" ng-repeat="to in email.bcc" >Bcc:</div>
        <div flex="90" ng-repeat="cc in email.cc">{{bcc.email}}{{bcc.name}}</div>
     </div>
             
