@@ -31,8 +31,8 @@ var myapp = angular.module('myModule',['ui.router', 'ui-notification', 'ngMateri
 
 //mycontroller for compose.html file(api calls for send and save an email)
 myapp.controller('myController',function($scope,$http,Notification, $stateParams){
-    console.log($stateParams);
     console.log("myController loaded");
+    
     $scope.thisEmail = {
         from: { 
                 email:"",
@@ -248,13 +248,19 @@ myapp.controller('sentController',function($scope,$http,$state,$stateParams){
       $state.go('viewemail',{thisEmail:thisEmail});
   }
 
+
+// myapp.controller('viewemailController',function($scope,$http,$state,$stateParams){
+//     console.log("viewemailController loaded");
+
+
  //fuction for back button
   $scope.back=function()
   {
       $state.go('sent');
   }
- 
 });
+
+
 
  //Routing
 myapp.config(function($stateProvider,$urlRouterProvider){ 
@@ -281,7 +287,7 @@ myapp.config(function($stateProvider,$urlRouterProvider){
         .state('viewemail',{
             url:'/viewemail',
             params:{
-              thisEmail:null,
+              thisEmail:true,
             },
             templateUrl:"view/viewemail.html",
             controller:'sentController'
