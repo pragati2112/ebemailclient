@@ -15,6 +15,7 @@
     
     <script src="node_modules/angular-ui-notification/dist/angular-ui-notification.min.js"></script>
     
+    
     <script src="view/app.js"></script> 
     </script>
 </head>
@@ -32,20 +33,29 @@
     text-align:center;
 }
 .width100{
-    width: 95%;
+    width: 100%;
+}
+.fixed {
+  position: fixed;
+}
+.margin
+{
+ margin-left: 200px;
 }
 </style>
 
 <!-- apply our angular app to our site -->
 <body ng-app="myModule">
-    <div layout="row" layout="start start" class="width100">
-        <div flex="25" class=" y" layout="column">
+    <div class="container">
+    <div layout="row" layout="start start" class=" width100">
+        <div flex="30" class=" fixed y" layout="column">
             <div class="sidePaneElement" layout="row" layout-align="center center"> <a ui-sref="send">COMPOSE</a></div>
             <div class="sidePaneElement" layout="row" layout-align="center center"><a ui-sref="draft">DRAFTS</a></div>
             <div class="sidePaneElement" layout="row" layout-align="center center"><a ui-sref="sent">SENT EMAILS</a></div>   
         </div>
-        <div flex ui-view></div>
+    
+        <div class="margin" flex ui-view></div>
     </div>
-
+</div>
 </body>
 </html>

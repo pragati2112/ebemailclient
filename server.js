@@ -26,7 +26,7 @@ mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},fu
 
 var API_KEY1 = 'SG.lF_-Qw61SFuTOzXw0QMgXQ.';
 var API_KEY2 = "wlc2YZg4oQcr_sg4XYmj2AnJejZsqhiwJ-9LjWnJ8vY";
-var API_KEY = API_KEY1 + API_KEY2;
+var API_KEY = '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';
 
 app.get('/',function(req,res){
     res.sendFile(__dirname + '/view/index.html');

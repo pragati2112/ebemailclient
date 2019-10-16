@@ -26,8 +26,10 @@ function randomString(){
     return thisString;
 };
 
+//create a module
 var myapp = angular.module('myModule',['ui.router', 'ui-notification', 'ngMaterial',]);
-//console.log("myModule loaded");
+
+//mycontroller for compose.html file(api calls for send and save an email)
 myapp.controller('myController',function($scope,$http,Notification, $stateParams){
     console.log($stateParams);
     console.log("myController loaded");
@@ -38,15 +40,12 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
     },
         to: [
             {
-                email: "a@b.com",
-                name: "AB",
+                email: "",
+                name: "",
             },
-            {
-                email: "c@d.com",
-                name: "CD",
-            },
+         
         ],
-        /* cc: [
+         cc: [
             {
                 name: "",
                 email: ""
@@ -57,13 +56,116 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
                 name: "",
                 email: ""
             },
-        ], */
-        subject: randomString(),
-        text: randomString(),
+        ], 
+        subject: "",
+        text: "",
     };
+    
+    $scope.addText=function(){
+      $scope.thisEmail.to.push({"email":"","name":""});
+    }
+    $scope.addcc=function(){
+        $scope.thisEmail.cc.push({"email":"","name":""});
+      }
+    $scope.addbcc=function(){
+        $scope.thisEmail.bcc.push({"email":"","name":""});
+    }
+
+   $scope.sanitizeEmail= function (thisEmail){
+        var thisto =thisEmail.to;
+        var newto=[];
+
+        var thiscc=thisEmail.cc;
+        var newcc=[];
+
+        var thisbcc=thisEmail.bcc;
+        var newbcc=[];
+
+        thisto.forEach(function(element){
+            if(element.email && element.name !="")
+            {
+                newto.push(element);
+            }
+           
+        });
+        thiscc.forEach(function(element){
+            if(element.email && element.name !="")
+            {
+                newcc.push(element);
+            }
+        });
+        thisbcc.forEach(function(element){
+            if(element.email && element.name !="")
+            {
+                newbcc.push(element);
+            }
+        });
+
+     if(newto.length>0||newcc.length>0||newbcc.length>0)
+     {
+        thisEmail.to=newto;
+        thisEmail.cc=newcc;
+        thisEmail.bcc=newbcc;
+        return thisEmail;
+     }
+     else{
+         Notification("filled it properly!");
+     }
+
+    };
+    
+    $scope.cleanEmail= function (thisEmail){
+        var thisto =thisEmail.to;
+        var newto=[];
+        var thiscc=thisEmail.cc;
+        var newcc=[];
+
+        var thisbcc=thisEmail.bcc;
+        var newbcc=[];
+
+        thisto.forEach(function(element){
+            if(element.email=="" && element.name =="")
+            {
+                
+            }else if(element.email != ""){
+                newto.push(element);
+            }
+        });
+        thiscc.forEach(function(element){
+            if(element.email=="" && element.name =="")
+            {
+                
+            }else if(element.email != ""){
+                newcc.push(element);
+            }
+        });
+        thisbcc.forEach(function(element){
+            if(element.email=="" && element.name =="")
+            {
+                
+            }else if(element.email != ""){
+                newbcc.push(element);
+            }
+        });
+
+     if(newto.length>0||newcc.length>0||newbcc.length>0)
+     {
+        thisEmail.to=newto;
+        thisEmail.cc=newcc;
+        thisEmail.bcc=newbcc;
+        return thisEmail;
+     }
+     else{
+         Notification("filled it properly!");
+     }
+
+    };
+
     if($stateParams.thisEmail){
         $scope.thisEmail = $stateParams.thisEmail;    
     }
+
+   //on send button
     $scope.send = function(thisEmail){
         console.log(thisEmail);
         $http({
@@ -78,9 +180,12 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
        
         
     };
-    // send();
-      
+
+      //on save button
         $scope.saveemail = function (thisEmail) {
+            console.log(thisEmail);
+            thisEmail = $scope.cleanEmail(thisEmail);
+            console.log(thisEmail);
             $http({
                 method:'POST',
                 url:'http://localhost:8888/api/save',
@@ -91,9 +196,12 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
                 console.log(response);
             });
             console.log(thisEmail);
-            // Notification('Saved succesfully');
+             Notification('Saved succesfully');
         };
 });
+
+
+//draftscontroller for draft.html file(api call for get all the saved emails)
 myapp.controller('draftsController',function($scope,$http,$state){
     console.log("draftsController loaded");
     function draftemails(){  
@@ -103,13 +211,13 @@ myapp.controller('draftsController',function($scope,$http,$state){
           
         }).then(function(response)
         {
-            //console.log(response);
             console.log(response.data);
             $scope.emails = response.data;
         });
     };
     draftemails();
 
+//function for open button
 $scope.open=function(thisEmail)
 {    
     $state.go('send', {thisEmail: thisEmail });
@@ -118,8 +226,8 @@ $scope.open=function(thisEmail)
 });
 
 
-
-myapp.controller('sentController',function($scope,$http){
+//sentcontroller for sent.html file(api for get all the sent emails)
+myapp.controller('sentController',function($scope,$http,$state,$stateParams){
     console.log("sentController loaded");
     function sentemails(){  
         $http({
@@ -133,7 +241,23 @@ myapp.controller('sentController',function($scope,$http){
         });
     };
     sentemails();
+
+ //function for view button
+  $scope.view=function(thisEmail)
+  {  
+      $scope.thisEmail = $stateParams.thisEmail;    
+      $state.go('viewemail',{thisEmail:thisEmail});
+  }
+
+ //fuction for back button
+  $scope.back=function()
+  {
+      $state.go('sent');
+  }
+ 
 });
+
+ //Routing
 myapp.config(function($stateProvider,$urlRouterProvider){ 
     $urlRouterProvider.otherwise('/send');
     $stateProvider
@@ -154,6 +278,14 @@ myapp.config(function($stateProvider,$urlRouterProvider){
             url:'/sent',
             templateUrl:"view/sent.html",
             controller:'sentController',
+        })
+        .state('viewemail',{
+            url:'/viewemail',
+            params:{
+              thisEmail:null,
+            },
+            templateUrl:"view/viewemail.html",
+            controller:'sentController'
         })
 });
 

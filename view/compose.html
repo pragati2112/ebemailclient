@@ -1,5 +1,6 @@
 
 <html lang = "en" >
+
   <style>
 .div{  
    padding:20px;
@@ -13,7 +14,7 @@
 }
 .size
 {
-   width:95%;
+   width:100%;
    height:70px;
 }
 
@@ -32,83 +33,85 @@
   <form name="myform">
 
  <div class=" width100 inputRow"  layout="row">
-<div flex="25">FROM:</div>
-<div flex="75" layout="column" layout-align="start start" layout="column" layout-align="start start">
+   <div flex="25">FROM:</div>
+    <div flex="75" layout="column" layout-align="start start" layout="column" layout-align="start start">
 
- <div layout="row" layout-align="start start" class="width100" >
+        <div layout="row" layout-align="start start" class="width100" >
 
- <div flex>
- <input type="email" name="from" id="from"  ng-model="thisEmail.from.email" class="width100" required />
- <span ng-show="myform.from.$touched && myform.from.$invalid">This is required.</span>
- </div>
- <div flex>
-<input type="text" name="from.name" id="from.name"  ng-model="thisEmail.from.name" class="width100" required />
-<span ng-show="myform.from.name.$touched && myform.from.name.$invalid">This is required.</span>
-</div>
-</div>
-</div>
+         <div flex>
+           <input type="email" name="from" id="from"  ng-model="thisEmail.from.email" class="width100" placeholder=" email" required />
+             <span ng-show="myform.from.$touched && myform.from.$invalid">This is required.</span>
+          </div>
+         <div flex>
+            <input type="text" name="from.name" id="from.name"  ng-model="thisEmail.from.name" class="width100" placeholder="name" required />
+            <span ng-show="myform.from.name.$touched && myform.from.name.$invalid">This is required.</span>
+         </div>
+      </div>
+   </div>
 </div>
 
  <div class="width100 inputRow"  layout="row" >
- <div flex="25">TO:</div>
- <div flex="75" layout="column" layout-align="start start" layout="column" layout-align="start start">
+   <div flex="25">TO:</div>
+   <div flex="75" layout="column" layout-align="start start" layout="column" layout-align="start start">
 
- <div layout="row" layout-align="start start" class="width100" ng-repeat="to in thisEmail.to">
-
- <div flex>
- <input type="email" name="to.email" id="to.email"  ng-model="to.email" class="width100" required />
- <span ng-show="myform.to.email.$touched && myform.to.email.$invalid">This is required.</span>
- </div>
- <div flex>
- <input type="text" name="to.name" id="to.name"  ng-model="to.name" class="width100" required />
- <span ng-show="myform.to.name.$touched && myform.to.name.$invalid">This is required.</span>
-
-</div>
-</div>
-</div>
+      <div layout="row" layout-align="start start" class="width100" ng-repeat="to in thisEmail.to">
+         <div flex>
+            <input type="email" name="to.email" id="to.email"  ng-model="to.email" class="width100" placeholder="email"/>
+         <!-- <span ng-show="myform.to.email.$touched && myform.to.email.$invalid">This is required.</span> -->
+         </div>
+         <div flex>
+            <input type="text" name="to.name" id="to.name"  ng-model="to.name" class="width100" placeholder="name" />
+         <!-- <span ng-show="myform.to.name.$touched && myform.to.name.$invalid">This is required.</span> -->
+         </div>
+      </div>
+      <button class="width100" ng-click="addText()">+</button>
+   </div>
 </div>       
 
+
   <div class="width100 inputRow"  layout="row" >
-  <div flex="25">CC:</div>
-  <div flex="75" layout="column" layout-align="start start" layout="column" layout-align="start start">
-  <div layout="row" layout-align="start start" class="width100" ng-repeat="cc in thisEmail.cc">
-  <div flex>
-  <input type="text" name="cc.name" id="cc.name"  ng-model="cc.name" class="width100">
-  </div>
-   <div flex>
-    <input type="email" name="cc.email" id="cc.email"  ng-model="cc.email" class="width100" />     
-   </div>
-   </div>
-   </div>
-  </div>      
+     <div flex="25">CC:</div>
+      <div flex="75" layout="column" layout-align="start start" layout="column" layout-align="start start">
+         <div layout="row" layout-align="start start" class="width100" ng-repeat="cc in thisEmail.cc">
+           <div flex>
+            <input type="email" name="cc.email" id="cc.email"  ng-model="cc.email" class="width100" placeholder="email">
+           </div>
+            <div flex>
+            <input type="text" name="cc.name" id="cc.name"  ng-model="cc.name" class="width100" placeholder="name" />   
+            </div>
+        </div>
+          <button class="width100" ng-click="addcc()">+</button>
+      </div>
+ </div>      
              
    <div class="width100 inputRow"  layout="row" >
-   <div flex="25">BCC:</div>
-   <div flex="75" layout="column" layout-align="start start" layout="column" layout-align="start start">
-    <div layout="row" layout-align="start start" class="width100" ng-repeat="bcc in thisEmail.bcc">
-    <div flex>
-    <input type="text" name="bcc.name" id="bcc.name"  ng-model="bcc.name" class="width100"/>
-    </div>
-   <div flex>
-   <input type="email" name="bcc.email" id="bcc.email"  ng-model="bcc.email" class="width100" />
-   </div>
-   </div>
-   </div>
+    <div flex="25">BCC:</div>
+    <div flex="75" layout="column" layout-align="start start" layout="column" layout-align="start start">
+       <div layout="row" layout-align="start start" class="width100" ng-repeat="bcc in thisEmail.bcc">
+         <div flex>
+           <input type="email" name="bcc.email" id="bcc.email"  ng-model="bcc.email" class="width100" placeholder="email"/>
+        </div>
+      <div flex>
+        <input type="text" name="bcc.name" id="bcc.name"  ng-model="bcc.name" class="width100" placeholder="name"/>
+      </div>
+      </div>
+         <button class="width100" ng-click="addbcc()">+</button>
+     </div>
    </div>
 
    <div class="width100 inputRow"  layout="row" >
-   <div flex="25">SUBJECT:</div>
-   <div flex="75"> <input type="text" name="subject" id="subject"  ng-model="thisEmail.subject"  class="width100" required />
-    <span ng-show="myform.subject.$touched && myform.subject.$invalid">This is required.</span>
-   </div>
-   </div>
+      <div flex="25">SUBJECT:</div>
+      <div flex="75"> <input type="text" name="subject" id="subject"  ng-model="thisEmail.subject"        class="width100" placeholder="subject" required />
+       <span ng-show="myform.subject.$touched && myform.subject.$invalid">This is required.</span>
+    </div>
+ </div>
          
    <div class="width100 inputRow"  layout="row" >
-    <div flex="25">TEXT:</div>
-    <div flex="75" >
-    <input type="text" class="size" name="text" id="text" placeholder="Type your message!"  ng-model="thisEmail.text" required />
-    <span ng-show="myform.text.$touched && myform.text.$invalid">This is required.</span>
-    </div>
+     <div flex="25">TEXT:</div>
+       <div flex="75" >
+         <input type="text" class="size" name="text" id="text" placeholder="Type your message!"  ng-model="thisEmail.text" required />
+            <span ng-show="myform.text.$touched && myform.text.$invalid">This is required.</span>
+      </div>
    </div>                 
 
 
@@ -119,7 +122,7 @@
       </md-button>   
    </div>
    <div>
-      <md-button class="positiveButton"  ng-click="send(thisEmail)" ng-disabled="myform.$invalid">
+      <md-button class="positiveButton"  ng-click=" sanitizeEmail(thisEmail); send(thisEmail)" ng-disabled="myform.$invalid">
          SEND
       </md-button>
    </div>
