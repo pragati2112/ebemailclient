@@ -86,7 +86,7 @@ function tri(){
     sendgrid.setApiKey(API_KEY); 
     sendgrid.send({  
         from:"vipulchaursiya@gmail.com",
-        to:  'vipulchaursiya.0@gmail.com',
+        to:  'rambabusahu12345@gmail.com',
         cc: "vipulchaursiya@gmail.com;",
         subject:    "NEW RESERVATION!",
         html:       "SOME TEXT OR HTvv",
