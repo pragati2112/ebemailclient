@@ -8,7 +8,7 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
     $scope.thisEmail = {
         from: { 
                 email:""
-    },
+            },
         to: [
             {
                 name: "",

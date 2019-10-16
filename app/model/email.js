@@ -7,8 +7,7 @@ var validateEmail = function(email) {
 var emailSchema = mongoose.Schema({
     from: {
         email: {
-            type: String,
-            required:true,
+            type: String,           
             validate: [validateEmail, 'Please fill a valid email address'] 
         },
         name: {type: String},
@@ -42,4 +41,5 @@ var emailSchema = mongoose.Schema({
     _sendGrid: [Schema.Types.Mixed],
     _error: {type: Boolean}, 
 });
+
 module.exports = mongoose.model('emails', emailSchema); 
