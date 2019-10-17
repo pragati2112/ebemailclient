@@ -6,9 +6,7 @@ const sendgrid=require("@sendgrid/mail");
 const moment=require('moment');
 let email=require('./app/model/email.js');
 const randomEmail=require('./random.js');
-
-
-
+require('dotenv').config()
 var app=express();
 app.use(morgan('dev'));
 app.use(bodyparser.json());
@@ -24,13 +22,9 @@ mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},fu
        console.log("not established");
    }
 });
-var API_KEY3='jmza3b7kQzWYGcJKcKH5JX0g';
-var API_KEY1 = 'SG.G7mNEMl8Que9eY_G0i4OUA.';
-var API_KEY2 = 'kv3JWcnil0ygLr0NTzt';
-
-var API_KEY = API_KEY1+API_KEY2+API_KEY3;
 
 
+// api for rendering index.html file
 app.get('/',function(req,res){
     res.sendFile(__dirname + '/view/index.html');
 });
@@ -73,11 +67,12 @@ function sanitizeEmail(thisEmail){
     return thisEmail;
 };
 
+/* function for save and send email  */
 function  promiseChainSaveAndSendEmail(thisEmail,existingEmail){   
     var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid',
     '_error','_lastModified' ];   
-    /* passing the api key in sendgrid setapikey function */ 
-    sendgrid.setApiKey(API_KEY);
+    /* passing the api key in sendgrid setapikey function */     
+    sendgrid.setApiKey(process.env.API_KEY);
      /* return promise after resolve :- after saved with sent date */
     return new Promise(function(resolve,reject){
          /* thisEmail from the request */
@@ -255,33 +250,7 @@ app.post('/api/save',bodyparser.json(),function(req,res){
 })
 
 
-function promiseFn(){ 
-    return new Promise( function( resolve,reject){
-    setTimeout( function() {
-        var a = "A";
-        //console.log("1. Value is " + a);
-        resolve (a);
-  }, 5000);
-})
-  
-};
 
-    function promiseFnWrapper(){
-    var a =  promiseFn() 
-    
-    a.then(function(data){
-        console.log("2. Value is " +data);
-    })
-    .catch(function(err){
-        console.log(err);
-    })
-   
-   
-    
-};
-/*  promiseFnWrapper();  */
-
-//promiseFn();
 
 
 

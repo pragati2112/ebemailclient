@@ -803,5 +803,37 @@ function getApiKey()
    
 }
 
+function promiseFn(){ 
+    return new Promise( function( resolve,reject){
+    setTimeout( function() {
+        var a = "A";
+        //console.log("1. Value is " + a);
+        resolve (a);
+  }, 5000);
+})
+  
+};
 
+    function promiseFnWrapper(){
+    var a =  promiseFn() 
+    
+    a.then(function(data){
+        console.log("2. Value is " +data);
+    })
+    .catch(function(err){
+        console.log(err);
+    })
+   
+   
+    
+};
+/*  promiseFnWrapper();  */
+
+//promiseFn();
+
+var API_KEY3='jmza3b7kQzWYGcJKcKH5JX0g';
+var API_KEY1 = 'SG.G7mNEMl8Que9eY_G0i4OUA.';
+var API_KEY2 = 'kv3JWcnil0ygLr0NTzt';
+
+var API_KEY = API_KEY1+API_KEY2+API_KEY3;
 
