@@ -242,17 +242,46 @@ myapp.controller('sentController',function($scope,$http,$state,$stateParams){
     };
     sentemails();
 
+   
  //function for view button
-  $scope.view=function(thisEmail)
-  {  
-      $scope.thisEmail = $stateParams.thisEmail;    
-      $state.go('viewemail',{thisEmail:thisEmail});
+  $scope.view=function(email)
+  {     
+      $state.go('viewemail',{thisEmail:email});
   }
+});
 
+myapp.controller('viewemailController',function($scope,$state,$stateParams){
+    console.log("viewemailController loaded");
+   $scope.thisEmail = {
+        from: { 
+                email:"",
+            
+    },
+        to: [
+            {
+                email: "",
+                name: "",
+            },
+         
+        ],
+         cc: [
+            {
+                name: "",
+                email: ""
+            },
+        ],
+        bcc: [
+            {
+                name: "",
+                email: ""
+            },
+        ], 
+        subject: "",
+        text: "",
+    };
 
-// myapp.controller('viewemailController',function($scope,$http,$state,$stateParams){
-//     console.log("viewemailController loaded");
-
+    console.log($stateParams.thisEmail);
+    $scope.thisEmail = $stateParams.thisEmail; 
 
  //fuction for back button
   $scope.back=function()
@@ -260,7 +289,6 @@ myapp.controller('sentController',function($scope,$http,$state,$stateParams){
       $state.go('sent');
   }
 });
-
 
 
  //Routing
@@ -288,10 +316,10 @@ myapp.config(function($stateProvider,$urlRouterProvider){
         .state('viewemail',{
             url:'/viewemail',
             params:{
-              thisEmail:true,
+              thisEmail:'email',
             },
             templateUrl:"view/viewemail.html",
-            controller:'sentController'
+            controller:'viewemailController'
         })
 });
 
