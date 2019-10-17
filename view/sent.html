@@ -12,7 +12,7 @@
             }
      </style>
            
- <div class=" width100 inputRow border"  layout="column" layout-align="start start" ng-repeat="email in emails">
+ <div class=" width100 inputRow border"  layout="column" layout-align="start start" ng-repeat="email in emails | orderBy:'-_sent'">
     <div class="width100 padding" layout="row" layout-align="start start">
        <div flex="10">From: </div>
        <div flex="90"> {{email.from.email}},Name:{{email.from.name}}</div>
