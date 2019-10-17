@@ -111,7 +111,6 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
      else{
          Notification("filled it properly!");
      }
-
     };
     
     $scope.cleanEmail= function (thisEmail){
