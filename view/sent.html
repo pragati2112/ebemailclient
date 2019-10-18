@@ -43,8 +43,12 @@
     <div class="width100 padding" layout="row" layout-align="start start">
         <div flex="10">Sent Date:</div>
         <div flex="80">{{email._sent | date:"medium"}}</div>
-        <div flex="10" layout-align="end center"> 
-            <md-button class="positiveButton1" ng-click="view(email)">VIEW
+        <div flex="10" layout="row" layout-align="end end"> 
+            <md-button class="positiveButton1" ng-click="view(email)">
+             VIEW
+            </md-button>
+            <md-button class="positiveButton1" ng-click="delete(email._id)">
+             DELETE
             </md-button>
         </div>
      </div>

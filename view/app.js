@@ -226,7 +226,7 @@ $scope.open=function(thisEmail)
 
 
 //sentcontroller for sent.html file(api for get all the sent emails)
-myapp.controller('sentController',function($scope,$http,$state,$stateParams){
+myapp.controller('sentController',function($scope,$http,$state,Notification){
     console.log("sentController loaded");
     function sentemails(){  
         $http({
@@ -240,15 +240,45 @@ myapp.controller('sentController',function($scope,$http,$state,$stateParams){
         });
     };
     sentemails();
-
    
  //function for view button
   $scope.view=function(email)
   {     
       $state.go('viewemail',{thisEmail:email});
   }
+
+
+//function for delete button(delete an email)
+  $scope.delete=function(id)
+  { console.log(id);
+      $http({
+          method:"DELETE",
+          url:'http://localhost:8888/api/delete/'+id,
+          
+      }).then(function(response)
+      {
+          console.log(response);
+      });
+
+      function sentemails(){  
+        $http({
+            method:'GET',
+            url:'http://localhost:8888/api/sent',
+          
+        }).then(function(response)
+        {
+            console.log(response);
+            $scope.emails = response.data;
+        });
+        Notification("Mail deleted!");
+    };
+    sentemails();
+   
+  };
+
 });
 
+//viewemailcontroller for viewemail.html file
 myapp.controller('viewemailController',function($scope,$state,$stateParams){
     console.log("viewemailController loaded");
    $scope.thisEmail = {

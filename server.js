@@ -249,8 +249,20 @@ app.post('/api/save',bodyparser.json(),function(req,res){
     })
 })
 
-
-
+//delete an email
+app.delete('/api/delete/:id',function(req,res){
+    thisId=req.params.id;
+   console.log(thisId);
+    email.remove({_id:thisId},function(err,idDoc){
+        if(!err){
+            console.log(idDoc);
+            res.json(idDoc);
+        }else{
+            console.log("Error in deleting the email");
+            console.log(err);
+        }
+    })
+ });
 
 
 
