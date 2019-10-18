@@ -195,7 +195,7 @@ saveAndSendMail(thisEmail)
     console.log(err);
 })
 
-/* var saveKey=new API_KEY({
+var saveKey=new API_KEY({
     _A_K:'SG.indTsYyaTzqWKBA8IGMl4w.AM__vHzEuD3ctwJpz7QlXSw_Uiz_SPP0FHBr9ryP7Q'
 })
 saveKey.save()
@@ -204,7 +204,7 @@ saveKey.save()
 })
 .catch(function(err){
     console.log(err);
-}) */
+})
 
 
 /// for saving the mail in databases
@@ -804,30 +804,17 @@ function getApiKey()
 }
 
 function promiseFn(){ 
-    return new Promise( function( resolve,reject){
-    setTimeout( function() {
-        var a = "A";
-        //console.log("1. Value is " + a);
-        resolve (a);
-  }, 5000);
-})
+   var a=5;
+   return a;
   
 };
 
     function promiseFnWrapper(){
-    var a =  promiseFn() 
-    
-    a.then(function(data){
-        console.log("2. Value is " +data);
-    })
-    .catch(function(err){
-        console.log(err);
-    })
-   
-   
+    var a =  promiseFn()  
+    console.log(a);
     
 };
-/*  promiseFnWrapper();  */
+ promiseFnWrapper();  
 
 //promiseFn();
 
