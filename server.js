@@ -5,7 +5,6 @@ const bodyparser=require('body-parser');
 const sendgrid=require("@sendgrid/mail");
 const moment=require('moment');
 let email=require('./app/model/email.js');
-const randomEmail=require('./random.js');
 require('dotenv').config()
 var app=express();
 app.use(morgan('dev'));
@@ -13,7 +12,6 @@ app.use(bodyparser.json());
 app.listen(8888,()=>console.log("server is running on 8888"));
 app.use(morgan('dev'));
 app.use(express.static(__dirname,+'./app/public'));
-
 mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},function(err,conn) {
     if(!err){
         console.log("database connection established");
@@ -78,7 +76,7 @@ function  promiseChainSaveAndSendEmail(thisEmail,existingEmail){
          /* thisEmail from the request */
        // console.log(thisEmail)   
         if(existingEmail!=null){    
-            /*  assign new email to existing email */      
+            /*  assign thisemail to existing email */      
          for (var property in thisEmail) {
             if (allowedProperties.indexOf(property) != -1){
                 existingEmail[property] = thisEmail[property];
@@ -137,7 +135,7 @@ function  promiseChainSaveAndSendEmail(thisEmail,existingEmail){
 })
 }
  /* api for handle the send request */ 
-app.post('/api/send',bodyparser.json(),function(req,res){  
+app.post('/api/send',function(req,res){  
     var thisEmail = req.body;     
     if(thisEmail){
         
@@ -181,7 +179,7 @@ app.post('/api/send',bodyparser.json(),function(req,res){
 }); 
 
   /* api for save and update email objects */
-app.post('/api/save',bodyparser.json(),function(req,res){
+app.post('/api/save',function(req,res){
       var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid', '_error','_lastModified' ];         
       var thisEmail = req.body;
       console.log(thisEmail)
@@ -262,7 +260,11 @@ app.delete('/api/delete/:id',function(req,res){
             console.log(err);
         }
     })
- });
+});
+
+
+
+
 
 
 
