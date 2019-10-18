@@ -5,6 +5,7 @@ const bodyparser=require('body-parser');
 const sendgrid=require("@sendgrid/mail");
 const moment=require('moment');
 let email=require('./app/model/email.js');
+const API_KEY=require('./app/model/apikey')
 require('dotenv').config()
 var app=express();
 app.use(morgan('dev'));
@@ -65,6 +66,21 @@ function sanitizeEmail(thisEmail){
     return thisEmail;
 };
 
+function getApiKey()
+{
+   return new Promise( function(resolve,reject){
+     API_KEY.findOne({_A_K:{$exists:true}},function(err,ApiKeyDoc){
+        if(!err){           
+            var ApiKey=ApiKeyDoc._A_K;
+            resolve (ApiKey);
+        }
+        else{
+            console.log(err);
+        }
+    })
+   })   
+}
+
 /* function for save and send email  */
 function  promiseChainSaveAndSendEmail(thisEmail,existingEmail){   
     var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid',
@@ -72,9 +88,13 @@ function  promiseChainSaveAndSendEmail(thisEmail,existingEmail){
     /* passing the api key in sendgrid setapikey function */     
     sendgrid.setApiKey(process.env.API_KEY);
      /* return promise after resolve :- after saved with sent date */
-    return new Promise(function(resolve,reject){
-         /* thisEmail from the request */
-       // console.log(thisEmail)   
+    return new Promise(function(resolve,reject){ 
+        /* use of promise to use apikey */             
+        apiKeyFromDatabase=getApiKey();        
+        apiKeyFromDatabase.then(function(apiKey){
+        sendgrid.setApiKey(apiKey)   
+        /* thisEmail from the request */  
+        // console.log(thisEmail)   
         if(existingEmail!=null){    
             /*  assign thisemail to existing email */      
          for (var property in thisEmail) {
@@ -132,7 +152,9 @@ function  promiseChainSaveAndSendEmail(thisEmail,existingEmail){
       console.log(err);
       reject(null);
       })
+    })        
 })
+    
 }
  /* api for handle the send request */ 
 app.post('/api/send',function(req,res){  
