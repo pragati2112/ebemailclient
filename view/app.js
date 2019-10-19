@@ -1,3 +1,4 @@
+import { constants } from "fs";
 
 console.log("App.js loaded");
 function randomString(){
@@ -165,19 +166,25 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
     }
 
    //on send button
-    $scope.send = function(thisEmail){
-        console.log(thisEmail);
+    $scope.send = function(thisEmail){          
         $http({
             method:'POST',
             url:'http://localhost:8888/api/send',
             data: thisEmail,
         }).then(function(response)
         {
-            console.log(response);
-         
-        });
-       
-        
+           if(response!=null){
+               console.log(response)  ;  
+               alert("sent succesfully")
+           }else{
+               console.log(response) ;   
+               alert("not sent to value is required");
+           }        
+        })
+        .catch(function(err){
+            console.log("mail not sent ! try again");
+            console.log(err);
+        })     
     };
 
       //on save button
@@ -260,18 +267,6 @@ myapp.controller('sentController',function($scope,$http,$state,Notification){
           console.log(response);
       });
 
-      function sentemails(){  
-        $http({
-            method:'GET',
-            url:'http://localhost:8888/api/sent',
-          
-        }).then(function(response)
-        {
-            console.log(response);
-            $scope.emails = response.data;
-        });
-        Notification("Mail deleted!");
-    };
     sentemails();
    
   };

@@ -1,4 +1,5 @@
 const moment=require('moment');
+/* fuction for generate random mail */
 function randomNameEmail(){
     var firstname = ["Marquis", "Samir", "Adrien", "Joyce", "Pierce", "Juliette", "Kelton", "Jacob", "Isiah", "Lindsay", "Kian", "Jordyn", "Jaquan", "Anya", "Wayne", "Khalil"];
     var lastname= ["Mills", "Mercer", "Reeves", "Hines", "Sanford", "Irwin", "Koch", "Hinton", "Estes", "Jackson", "Lowe", "Guerra", "Pineda", "Franco", "Cowan", "Krause"];
@@ -21,6 +22,7 @@ function randomNameEmail(){
     return nameEmail;
 };
 
+/* fuction for genterate random string for subject or text field  */
 function randomString(){
     var verbs, nouns, adjectives, adverbs, preposition;
     nouns = ["bird", "clock", "boy", "plastic", "duck", "teacher", "old lady", "professor", "hamster", "dog"];
@@ -47,7 +49,7 @@ function randomString(){
     return thisString;
 };
 
-
+/*  this function genterate complete email fields value  for email object field */
 function databasePopulation(){
     var from = {
         name: "Team Exambazaar",

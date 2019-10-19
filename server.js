@@ -6,25 +6,24 @@ const sendgrid=require("@sendgrid/mail");
 const moment=require('moment');
 let email=require('./app/model/email.js');
 const API_KEY=require('./app/model/apikey')
-require('dotenv').config()
 var app=express();
 app.use(morgan('dev'));
 app.use(bodyparser.json());
-app.listen(8888,()=>console.log("server is running on 8888"));
+app.listen(8888,function(){console.log("server is running on 8888")})
 app.use(morgan('dev'));
-app.use(express.static(__dirname,+'./app/public'));
-mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},function(err,conn) {
+mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},function(err,conn) {    
     if(!err){
         console.log("database connection established");
    }
    else{
-       console.log("not established");
+       console.log("connection not established");
+       console.log(err);
    }
 });
 
-
-// api for rendering index.html file
+ /* api to send  index.html file in response */ 
 app.get('/',function(req,res){
+    //console.log(req);
     res.sendFile(__dirname + '/view/index.html');
 });
 
@@ -33,7 +32,7 @@ var validateEmail = function(email) {
     return re.test(email);
 };
 
- /* function for check thisEmail to,cc,bcc value */
+ /* function for check thisEmail to,cc,bcc value  */
 function sanitizeEmail(thisEmail){
     var thisTo = thisEmail.to;
     var newTo = [];
@@ -66,15 +65,17 @@ function sanitizeEmail(thisEmail){
     return thisEmail;
 };
 
+/* funtion to give apikey from datbase if its exists*/
 function getApiKey()
 {
    return new Promise( function(resolve,reject){
-     API_KEY.findOne({_A_K:{$exists:true}},function(err,ApiKeyDoc){
-        if(!err){           
+     API_KEY.findOne({_A_K:{$exists:true}},function(err,ApiKeyDoc){        
+        if(!err && ApiKeyDoc){           
             var ApiKey=ApiKeyDoc._A_K;
-            resolve (ApiKey);
+            resolve(ApiKey);
         }
         else{
+            console.log("Error in getting the API KEY");
             console.log(err);
         }
     })
@@ -85,6 +86,7 @@ function getApiKey()
 function  promiseChainSaveAndSendEmail(thisEmail,existingEmail){   
     var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid',
     '_error','_lastModified' ];   
+
     /* passing the api key in sendgrid setapikey function */     
     sendgrid.setApiKey(process.env.API_KEY);
      /* return promise after resolve :- after saved with sent date */
@@ -123,32 +125,32 @@ function  promiseChainSaveAndSendEmail(thisEmail,existingEmail){
         thisEmail._sent=moment().toDate();  
            // send the email now          
            sendgrid.send(thisEmail)
-           .then(function(thisEmail){        
-           console.log("email has been sent ")  ;
-                     
+           .then(function(sendgridEmail){        
+           console.log("email has been sent ");  
+              /* now save the email with sent date in database */   
+              thisEmail.save()    
+             .then(function(withSentDate){
+              console.log("email has been saved with sent data");
+              /*this resolve will be return with promise */  
+              resolve (withSentDate);
+              })
+              .catch(function(err){
+              console.log("Error in saving email with sent data");
+              console.log(err);
+              reject(null) ;           
+              })
            })
            .catch(function(err){
-           console.log("Error in sending email");
-           console.log(err);
+           console.log("Error in sending email");           
+           console.log(err);           
+           reject(null);
            })
             /* return thisEmail for next then  */
-        return thisEmail;
+               
         })
-         /* now save the email with sent date in database */
-        .then(function(withSentDate){        
-          withSentDate.save()
-          .then(function(withSentDate){
-          console.log("email has been saved with sent data")
-          /*  this resolve will be return with promise */  
-          resolve (withSentDate);
-          })
-          .catch(function(err){
-          console.log("Error in saving email with sent data")
-          console.log(err);
-          reject(null) ;           
-          })
-       })
+         
       .catch(function(err){
+      console.log("Error in  sent 2")
       console.log(err);
       reject(null);
       })
@@ -157,13 +159,13 @@ function  promiseChainSaveAndSendEmail(thisEmail,existingEmail){
     
 }
  /* api for handle the send request */ 
-app.post('/api/send',function(req,res){  
+app.post('/api/send',function(req,res){   
     var thisEmail = req.body;     
-    if(thisEmail){
-        
+    if(thisEmail){        
          /* check thisEmail is valid and anyone from the to,cc,bcc is in thiecEmail */
         thisEmail = sanitizeEmail(thisEmail);
-        var existingEmail = email.findOne({ _id: thisEmail._id}, function(err,existingEmail){            
+        var existingEmail = email.findOne({ _id: thisEmail._id}, function(err,existingEmail){  
+                  
             if(!err){
                 if(existingEmail){
                     /* check existing email has sent date or not */ 
@@ -171,29 +173,34 @@ app.post('/api/send',function(req,res){
                         console.log("This mail is already sent ");
                         res.json(existingEmail);
                     }else{  
-                        console.log(existingEmail);  
+                         //console.log(existingEmail);  
                          /* assign lasmodified date to exsting mail */            
                         existingEmail._lastModified=moment().toDate();  
                          /* it wiil upadate existingemail with new thisEmail and will save it with sent date after sending  */
                         promiseChainSaveAndSendEmail(thisEmail,existingEmail)
                         .then(function(existingEmail){
-                        console.log(existingEmail);
+                        //console.log(existingEmail);
                          /* send the response with sent date */ 
                         res.json(existingEmail);
                         })
-                        .catch(function(err){
+                        .catch(function(err){                            
+                        console.log("Error in using promise for promiseChainSaveAndSendEmail function in where existingEmaiil exist");  
                         console.log(err);
+                        res.json(null);
                         })              
                      }   
-                }else{  
-                 promiseChainSaveAndSendEmail(thisEmail)
-                 .then(function(thisEmail){                          
-                 console.log(thisEmail);
-                 res.json(thisEmail);
-                 })
-                 .catch(function(err){
-                 console.log(err);
-                 })                                                                                                      
+                }else{ 
+                    //console.log(thisEmail);                 
+                c= promiseChainSaveAndSendEmail(thisEmail)
+                c.then(function(thisEmail){    
+                console.log("400 sdfghjjjjjjjjjjjjjjj")            
+                res.json(thisEmail);                 
+                })
+                .catch(function(err){
+                console.log("Error in using promise for promiseChainSaveAndSendEmail function in where existingEmaiil is null");
+                console.log(err);
+                res.json(null);
+                })                                                                                                      
             }                   
             }
         });
@@ -204,10 +211,10 @@ app.post('/api/send',function(req,res){
 app.post('/api/save',function(req,res){
       var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid', '_error','_lastModified' ];         
       var thisEmail = req.body;
-      console.log(thisEmail)
+      //console.log(thisEmail)
       var existingEmail = email.findOne({ _id:thisEmail._id},function(err,existingEmail){         
       if(!err){
-        if(existingEmail && existingEmail._sent){
+        if(existingEmail._sent){
             /* do nothing */
             res.json(existingEmail);
         }else{ 
@@ -226,33 +233,37 @@ app.post('/api/save',function(req,res){
              /* assign lasstmodified date before saving */           
             existingEmail._lastModified = moment().toDate();              
             existingEmail.save()
-            .then( (existingEmail) =>{
+            .then(function (existingEmail){
                 console.log("this email is now updated/save in database")
                 console.log(existingEmail);
                 /* send after saved thisEmail object in database */
                 res.json(existingEmail);    
             })
-            .catch(err =>{
+            .catch(function(err){
+                console.log("Error in saving the email")
                 console.log(err);
                 res.json(null);
             });
         }       
       }else{
+          console.log("Error in fetching the document for send api")
          console.log(err);
          res.json(null);
      }
     });
 });
 
-   /* api for successfully delivered mails */ 
+ /* api for successfully delivered mails */ 
  app.get('/api/sent',function(req,res){   
      // find all emails obejct if error is false means already sent    
-     email.find({_sent: {$exists: true}},function(err,sentEmails){
-         if(!err){
+     email.find({_sent: {$exists: true}},function(err,sentEmails){        
+         if(!err && sentEmails.length>0){
             res.json(sentEmails);
            }        
          else{
-             console.log(err);
+             console.log("Error in sentEmails")
+             console.log(err); 
+             res.json(null);            
          }
      })
  })
@@ -260,22 +271,24 @@ app.post('/api/save',function(req,res){
  app.get('/api/draft',function(req,res){ 
      /* find all emails obejct if error is false means already sent  */    
     email.find({_sent: {$exists: false}},function(err,draftEmails){
-        if(!err){
+        if(!err && draftEmails.length>0){
             res.json(draftEmails);
         }
         else{
+            console.log("Error in draftemails")
             console.log(err)
+            res.json(null);
         }
     })
 })
 
-//delete an email
+/* delete an email */
 app.delete('/api/delete/:id',function(req,res){
     thisId=req.params.id;
-   console.log(thisId);
+    //console.log(thisId);
     email.remove({_id:thisId},function(err,idDoc){
-        if(!err){
-            console.log(idDoc);
+        if(!err && idDoc.length>0){
+            //console.log(idDoc);
             res.json(idDoc);
         }else{
             console.log("Error in deleting the email");
