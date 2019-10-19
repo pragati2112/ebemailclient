@@ -799,8 +799,7 @@ function getApiKey()
             console.log(err);
         }
     })
-   })
-   
+   })   
 }
 
 function promiseFn(){ 
