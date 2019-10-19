@@ -171,6 +171,7 @@ app.post('/api/send',function(req,res){
                  })
                  .catch(function(err){
                  console.log(err);
+                 res.json(null);
                  })                                                                                                      
             }                   
             }

@@ -1,17 +1,5 @@
 
-<html lang = "en" >
-
   <style>
-.div{  
-   padding:20px;
-   width:600px;
-   height:550px;
-   background-color: bisque;
-   border:1px solid crimson;
-   margin-left: 300px; 
-   display:flex;
-   justify-content: space-around;
-}
 .size
 {
    width:100%;
@@ -102,7 +90,7 @@
 
    <div class="width100 inputRow"  layout="row" >
       <div flex="25">SUBJECT:</div>
-      <div flex="75"> <input type="text" name="subject" id="subject"  ng-model="thisEmail.subject"        class="width100" placeholder="subject" required />
+      <div flex="75"> <input type="text" name="subject" id="subject"  ng-model="thisEmail.subject" class="width100" placeholder="subject" required />
        <span ng-show="myform.subject.$touched && myform.subject.$invalid">This is required.</span>
     </div>
  </div>
@@ -123,7 +111,7 @@
       </md-button>   
    </div>
    <div>
-      <md-button class="positiveButton"  ng-click=" sanitizeEmail(thisEmail); send(thisEmail)" ng-disabled="myform.$invalid">
+      <md-button class="positiveButton"  ng-click="send(thisEmail)" ng-disabled="myform.$invalid">
          SEND
       </md-button>
    </div>

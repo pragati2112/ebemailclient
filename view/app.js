@@ -1,5 +1,3 @@
-
-console.log("App.js loaded");
 function randomString(){
     var verbs, nouns, adjectives, adverbs, preposition;
     nouns = ["bird", "clock", "boy", "plastic", "duck", "teacher", "old lady", "professor", "hamster", "dog"];
@@ -26,14 +24,13 @@ function randomString(){
     return thisString;
 };
 
-//create a module
-var myapp = angular.module('myModule',['ui.router', 'ui-notification', 'ngMaterial',]);
+//create a module(ebemailModule)
+var ebemailclient = angular.module('ebemailModule',['ui.router', 'ui-notification', 'ngMaterial',]);
+// console.log(ebemailclient);
 
-//mycontroller for compose.html file(api calls for send and save an email)
-myapp.controller('myController',function($scope,$http,Notification, $stateParams){
-    console.log("myController loaded");
-    
-    $scope.thisEmail = {
+//composecontroller for compose.html file(api calls for send and save an email)
+ebemailclient.controller('composeController',function($scope,$http,Notification, $stateParams){
+ $scope.thisEmail = {
         from: { 
                 email:"",
             
@@ -165,24 +162,33 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
     }
 
    //on send button
+   //input- thisEmail, expected output-sent succesfully.
     $scope.send = function(thisEmail){
-        console.log(thisEmail);
         $http({
             method:'POST',
             url:'http://localhost:8888/api/send',
             data: thisEmail,
-        }).then(function(response)
-        {
+        })
+        .then(function(response) {
             console.log(response);
          
-        });
-       
-        
+            if(response!=null)
+            {
+            Notification("sent!");
+            }else{
+            Notification("not sent");
+            }
+        })
+        .catch(function(error){
+            Notification("Mail not sent!Try another time.");
+            console.log(error);       
+        })
+
     };
 
       //on save button
+      //input-thisEmail , expected output- saved successfully.
         $scope.saveemail = function (thisEmail) {
-            console.log(thisEmail);
             thisEmail = $scope.cleanEmail(thisEmail);
             console.log(thisEmail);
             $http({
@@ -190,33 +196,49 @@ myapp.controller('myController',function($scope,$http,Notification, $stateParams
                 url:'http://localhost:8888/api/save',
                 data: thisEmail,
             })
-            .then(function(response)
-            {
+            .then(function(response) {
                 console.log(response);
-            });
-            console.log(thisEmail);
-             Notification('Saved succesfully');
+                if(response!=null)
+                {
+                 Notification('Saved succesfully');
+                }else{
+                 Notification("not saved");
+                }
+            })
+            .catch(function(error){
+                console.log(error);
+                Notification("mail not saved!");
+            });  
         };
 });
 
 
 //draftscontroller for draft.html file(api call for get all the saved emails)
-myapp.controller('draftsController',function($scope,$http,$state){
-    console.log("draftsController loaded");
+ebemailclient.controller('draftsController',function($scope,$http,$state,Notification){
     function draftemails(){  
         $http({ 
             method:'GET',
             url:'http://localhost:8888/api/draft',
           
-        }).then(function(response)
-        {
-            console.log(response.data);
-            $scope.emails = response.data;
+        })
+        .then(function(response){
+            // console.log(response.data);
+            if(response!=null)
+            {
+             $scope.emails = response.data;
+            }else{
+            Notification ("Try another time!");
+            }
+        })
+        .catch(function(error){
+            console.log(error);
+            Notification("Try another time!");
         });
     };
     draftemails();
 
-//function for open button
+//function for open button to open the draft-
+//input-thisEmail , expected output-thisEmail and send thisEmail to the 'send' state for updation.
 $scope.open=function(thisEmail)
 {    
     $state.go('send', {thisEmail: thisEmail });
@@ -224,24 +246,32 @@ $scope.open=function(thisEmail)
 
 });
 
-
 //sentcontroller for sent.html file(api for get all the sent emails)
-myapp.controller('sentController',function($scope,$http,$state,Notification){
-    console.log("sentController loaded");
+//expected output-get all the sent emails data.
+ebemailclient.controller('sentController',function($scope,$http,$state,Notification){
     function sentemails(){  
         $http({
             method:'GET',
             url:'http://localhost:8888/api/sent',
           
-        }).then(function(response)
+        })
+        .then(function(response)
         {
             console.log(response);
+            if(response!=null){
             $scope.emails = response.data;
+            }else{
+             Notification("try another time!");  
+            }
+        })
+        .catch(function(error){
+            console.log(error);
+            Notification("try another time!");
         });
     };
     sentemails();
    
- //function for view button
+ //function for view button(to open the email.)
   $scope.view=function(email)
   {     
       $state.go('viewemail',{thisEmail:email});
@@ -250,37 +280,31 @@ myapp.controller('sentController',function($scope,$http,$state,Notification){
 
 //function for delete button(delete an email)
   $scope.delete=function(id)
-  { console.log(id);
+  { 
       $http({
           method:"DELETE",
           url:'http://localhost:8888/api/delete/'+id,
           
-      }).then(function(response)
-      {
+      })
+      .then(function(response){
           console.log(response);
+          if(response!=null){
+           Notification("Deleted");   
+          }else{
+         Notification("Mail is not deleted!");   
+          }
+      })
+      .catch(function(error){
+          console.log(error);
+          Notification("Mail is not deleted!"); 
       });
-
-      function sentemails(){  
-        $http({
-            method:'GET',
-            url:'http://localhost:8888/api/sent',
-          
-        }).then(function(response)
-        {
-            console.log(response);
-            $scope.emails = response.data;
-        });
-        Notification("Mail deleted!");
-    };
     sentemails();
-   
-  };
+ };
 
 });
 
 //viewemailcontroller for viewemail.html file
-myapp.controller('viewemailController',function($scope,$state,$stateParams){
-    console.log("viewemailController loaded");
+ebemailclient.controller('viewemailController',function($scope,$state,$stateParams){
    $scope.thisEmail = {
         from: { 
                 email:"",
@@ -308,7 +332,6 @@ myapp.controller('viewemailController',function($scope,$state,$stateParams){
         subject: "",
         text: "",
     };
-
     console.log($stateParams.thisEmail);
     $scope.thisEmail = $stateParams.thisEmail; 
 
@@ -321,16 +344,16 @@ myapp.controller('viewemailController',function($scope,$state,$stateParams){
 
 
  //Routing
-myapp.config(function($stateProvider,$urlRouterProvider){ 
-    $urlRouterProvider.otherwise('/send');
-    $stateProvider
+ebemailclient.config(function($stateProvider,$urlRouterProvider){ 
+    $urlRouterProvider.otherwise('/send');   //if url is not matched with given urls then redirect to the 'send' state. 
+    $stateProvider                         
         .state('send',{
             url:'/send',
             params: {
                 thisEmail: null,
             },
             templateUrl:"view/compose.html",
-            controller:'myController',
+            controller:'composeController',
         })
         .state('draft',{
             url:'/draft',
@@ -351,7 +374,6 @@ myapp.config(function($stateProvider,$urlRouterProvider){
             controller:'viewemailController'
         })
 });
-
 
 
 
