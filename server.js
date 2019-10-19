@@ -189,16 +189,17 @@ app.post('/api/send',function(req,res){
                         res.json(null);
                         })              
                      }   
-                }else{  
-                 promiseChainSaveAndSendEmail(thisEmail)
-                 .then(function(thisEmail){                          
-                 console.log(thisEmail);
-                 res.json(thisEmail);
-                 })
-                 .catch(function(err){
-                 console.log(err);
-                 res.json(null);
-                 })                                                                                                      
+                }else{ 
+                    //console.log(thisEmail);                 
+                promiseChainSaveAndSendEmailRes= promiseChainSaveAndSendEmail(thisEmail)
+                promiseChainSaveAndSendEmailRes.then(function(thisEmail){              
+                res.json(thisEmail);                 
+                })
+                .catch(function(err){
+                console.log("Error in using promise for promiseChainSaveAndSendEmail function in where existingEmaiil is null");
+                console.log(err);
+                res.json(null);
+                })                                                                                                      
             }                   
             }
         });
