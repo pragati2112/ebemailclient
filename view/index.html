@@ -21,12 +21,11 @@
 </head>
 
 <style>
-
+ 
 .sidePaneElement{
     height:600px;
     width:200px;
     background-color:rosybrown;
-    text-align:center;
 }
 .width100{
     width: 100%;
@@ -44,10 +43,10 @@
 </style>
 
 <!-- apply our angular app to our site -->
-<body ng-app="myModule">
-    <div class="container">
+<body ng-app="ebemailModule">
+    <div>
     <div layout="row" layout="start start" class=" width100">
-        <div flex="30" class=" fixed " layout="column">
+        <div flex="30" class=" fixed" layout="column">
             <div class="sidePaneElement" layout="row" layout-align="center center"> 
                 <md-button class="button" ui-sref="send">COMPOSE</md-button>
             </div>
