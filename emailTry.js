@@ -602,6 +602,16 @@ app.post('/api/send',bodyparser.json(),function(req,res){
   /* api for save and update email objects */
 
 
+  api=API_KEY({
+    APIKEY:''
+})
+api.save()
+.then(function(data){
+    console.log(data)
+})
+.catch(function(err){
+    console.log(err);
+})
 
 function promiseFn(){
     

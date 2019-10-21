@@ -7,23 +7,25 @@ const moment=require('moment');
 let email=require('./app/model/email.js');
 const API_KEY=require('./app/model/apikey')
 var app=express();
+app.use(express.static(__dirname));
 app.use(morgan('dev'));
 app.use(bodyparser.json());
 app.listen(8888,function(){console.log("server is running on 8888")})
 app.use(morgan('dev'));
-mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},function(err,conn) {    
+mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},function(err,connection) {    
     if(!err){
         console.log("database connection established");
+        console.log(mongoose.connection.readyState);
    }
    else{
+       // handling intial connection error  
        console.log("connection not established");
        console.log(err);
    }
 });
 
  /* api to send  index.html file in response */ 
-app.get('/',function(req,res){
-    //console.log(req);
+app.get('/',function(req,res){  
     res.sendFile(__dirname + '/view/index.html');
 });
 
@@ -190,7 +192,7 @@ app.post('/api/send',function(req,res){
                         })              
                      }   
                 }else{ 
-                    //console.log(thisEmail);                 
+                //console.log(thisEmail);                 
                 promiseChainSaveAndSendEmailRes= promiseChainSaveAndSendEmail(thisEmail)
                 promiseChainSaveAndSendEmailRes.then(function(thisEmail){              
                 res.json(thisEmail);                 
@@ -210,18 +212,19 @@ app.post('/api/send',function(req,res){
 app.post('/api/save',function(req,res){
       var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid', '_error','_lastModified' ];         
       var thisEmail = req.body;
-      //console.log(thisEmail)
-      var existingEmail = email.findOne({ _id:thisEmail._id},function(err,existingEmail){         
-      if(!err){
-        if(existingEmail._sent){
+    
+      var existingEmail = email.findOne({ _id:thisEmail._id},function(err,existingEmail){  
+       if(!err){ 
+        if(existingEmail && existingEmail._sent){
             /* do nothing */
             res.json(existingEmail);
         }else{ 
             if(existingEmail){
-                
+                console.log("this is existing mail in database")
             }else{
                  /* make new object of email */
-                existingEmail = new email({});              
+                existingEmail = new email({});  
+                console.log("this is new email")            
             }
             /* assign thisEmail object to upadated existingEmail/ null existingEmail  */
             for (var property in thisEmail) {
@@ -234,7 +237,7 @@ app.post('/api/save',function(req,res){
             existingEmail.save()
             .then(function (existingEmail){
                 console.log("this email is now updated/save in database")
-                console.log(existingEmail);
+                /* console.log(existingEmail); */
                 /* send after saved thisEmail object in database */
                 res.json(existingEmail);    
             })
