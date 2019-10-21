@@ -25,7 +25,8 @@ function randomString(){
 };
 
 //create a module(ebemailModule)
-var ebemailclient = angular.module('ebemailModule',['ui.router', 'ui-notification', 'ngMaterial',]);
+var ebemailclient = angular.module('ebemailModule',['ui.router', 'ui-notification', 'ngMaterial']);
+
 // console.log(ebemailclient);
 
 //composecontroller for compose.html file(api calls for send and save an email)

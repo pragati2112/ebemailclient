@@ -171,7 +171,7 @@ app.post('/api/send',function(req,res){
                         console.log("This mail is already sent ");
                         res.json(existingEmail);
                     }else{  
-                        console.log(existingEmail);  
+                        console. log(existingEmail);  
                          /* assign lasmodified date to exsting mail */            
                         existingEmail._lastModified=moment().toDate();  
                          /* it wiil upadate existingemail with new thisEmail and will save it with sent date after sending  */
