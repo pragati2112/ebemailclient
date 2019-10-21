@@ -31,7 +31,7 @@
 
 .header
 {
-    height:50px;
+    height:60px;
     width:100%;
     text-align: left;
     background-color: rgb(168,208,141);
@@ -61,26 +61,28 @@
                 </md-card-header>
             </div>
 
-
-    <!-- <div>
-    <div layout="row" layout="start start" class=" width100">
-        <div flex="25" class=" fixed" layout="column">
-            <div class="sidePaneElement"  layout="row" layout-align="center center"> 
-                <md-button class="button" ui-sref="send">COMPOSE</md-button>
-            </div>
-
-            <div class="sidePaneElement" layout="row" layout-align="center center"> 
-                <md-button class="button" ui-sref="draft">DRAFTS</md-button >
-            </div>
-
-            <div class="sidePaneElement" layout="row" layout-align="center center"> 
-              <md-button class="button" ui-sref="sent">SENT EMAILS</md-button >
-            </div>   
-        </div>
-     -->
+            <div  layout="column" layout-align="end end">
+                    <md-fab-speed-dial>
+                      <md-fab-trigger>
+                        <md-button  ui-sref="send" class="md-fab md-warn">+</md-button>
+                      </md-fab-trigger>
+                </md-fab-speed-dial>
+           </div>
+ 
   <div class="container">
  <div ui-view> </div>
   </div>
+
+
+  <div  layout="column" layout-align="end end">
+        <md-fab-speed-dial>
+          <md-fab-trigger>
+            <md-button  ui-sref="send" class="md-fab md-warn">+</md-button>
+          </md-fab-trigger>
+    </md-fab-speed-dial>
+</div>
+
+
 
 </body>
 </html>
