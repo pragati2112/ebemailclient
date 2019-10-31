@@ -5,7 +5,6 @@ let email=require('./app/model/email.js');
 const bodyparser=require('body-parser');
 const sendgrid=require("@sendgrid/mail");
 const moment=require('moment');
-const email=require('./app/model/email.js');
 const API_KEY=require('./app/model/apikey')
 var app=express();
 app.use(express.static(__dirname));
