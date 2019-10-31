@@ -4,14 +4,15 @@ const mongoose=require('mongoose');
 const bodyparser=require('body-parser');
 const sendgrid=require("@sendgrid/mail");
 const moment=require('moment');
-let email=require('./app/model/email.js');
+const email=require('./app/model/email.js');
+console.log(email);
 const API_KEY=require('./app/model/apikey')
 var app=express();
 app.use(express.static(__dirname));
 app.use(morgan('dev'));
 app.use(bodyparser.json());
 app.listen(8888,function(){console.log("server is running on 8888")})
-app.use(morgan('dev'));
+
 mongoose.connect( 'mongodb://localhost:27017/mailData',{useNewUrlParser:true},function(err,connection) {    
     if(!err){
         console.log("database connection established");
@@ -71,9 +72,10 @@ function sanitizeEmail(thisEmail){
 function getApiKey()
 {
    return new Promise( function(resolve,reject){
-     API_KEY.findOne({_A_K:{$exists:true}},function(err,ApiKeyDoc){        
+     API_KEY.findOne({APIKEY:{$exists:true}},function(err,ApiKeyDoc){   
+            console.log(ApiKeyDoc)
         if(!err && ApiKeyDoc){           
-            var ApiKey=ApiKeyDoc._A_K;
+            var ApiKey=ApiKeyDoc.APIKEY;
             resolve(ApiKey);
         }
         else{
@@ -87,10 +89,7 @@ function getApiKey()
 /* function for save and send email  */
 function  promiseChainSaveAndSendEmail(thisEmail,existingEmail){   
     var allowedProperties = ['from','to','cc','bcc','text','subject','_created','_error','_sent','_sendGrid',
-    '_error','_lastModified' ];   
-
-    /* passing the api key in sendgrid setapikey function */     
-    sendgrid.setApiKey(process.env.API_KEY);
+    '_error','_lastModified' ];    
      /* return promise after resolve :- after saved with sent date */
     return new Promise(function(resolve,reject){ 
         /* use of promise to use apikey */             
