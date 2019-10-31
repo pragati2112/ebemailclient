@@ -16,6 +16,11 @@
             
 </style>    
 
+   <md-button class="positiveButton1" ng-click="back()">
+      BACK
+     </md-button>
+
+
 <div class=" width100 inputRow"  layout="column" layout-align="start start">
    <div class="width100 padding" layout="row" layout-align="start start">
          <div flex="25">From: </div>
@@ -38,19 +43,22 @@
                  
     <div class="width100 padding" layout="row" layout-align="start start">
          <div flex="25" >Cc: </div>
-         <div flex="75"ng-repeat="cc in thisEmail.cc" layout="column" layout-align="start start"> 
+         <div flex="75">
+           <div  ng-repeat="cc in thisEmail.cc" layout="row" layout-align="start start"> 
              <div> {{cc.email}}</div> 
-             <div> Name:{{cc.name}}</div>
-         </div>
-   </div>     
-
+             <!-- <div>   Name:{{cc.name}}</div> -->
+           </div>
+        </div>     
+    </div>
     <div class="width100 padding" layout="row" layout-align="start start">
-         <div flex="25" >Bcc:</div>
-         <div flex="75" ng-repeat="cc in thisEmail.cc"  layout="column" layout-align="start start">
-           <div>  {{bcc.email}}</div>
-           <div> Name:{{bcc.name}}</div>
-       </div>
-    </div>   
+         <div flex="25" ng-repeat="bcc in thisEmail.bcc"  >Bcc:</div>
+         <div flex="75">
+           <div ng-repeat="bcc in thisEmail.bcc"  layout="column" layout-align="start start">
+             <div>  {{bcc.email}}</div>
+             <div> Name:{{bcc.name}}</div>
+          </div>
+        </div>   
+    </div>
 
    <div layout="row" class="width100 padding" layout-align="start start">
           <div  flex="25">Subject:</div>
@@ -62,11 +70,7 @@
          <div  flex="75" layout-align="start start">{{thisEmail.text}}</div>
    </div>
             
-           
-  <div flex="25" layout-align="end center"> 
-        <md-button class="positiveButton1" ng-click="back()">
-         BACK
-        </md-button>
+    
  </div> 
    
 </div> 

@@ -19,7 +19,7 @@
           <div flex="25">From: </div>
           <div flex="75" layout="column" layout-align="start start">
              <div> {{email.from.email}}</div>
-                <div>Name:{{email.from.name}}</div>
+             <div>Name:{{email.from.name}}</div>
         </div>
       </div>         
        <div class="width100 padding" layout="row" layout-align="start start">
@@ -57,17 +57,17 @@
                
        <div class="width100 padding" layout="row" layout-align="start start">
            <div flex="25">Sent Date:</div>
-           <div flex="75">{{email._lastModified | date:"medium"}}</div>
-           <div flex="10" layout="row" layout-align="end end"> 
+           <div flex="65">{{email._lastModified | date:"medium"}}</div>
+           <div flex="1" layout="row" layout-align="end end" layout-xs="column" flex-xs="1"> 
                <md-button class="positiveButton1" ng-click="open(email)">
                 OPEN
                </md-button>
-               <!-- <md-button class="positiveButton1" ng-click="delete(email._id)">
-                DELETE
-               </md-button> -->
+               <md-button class="positiveButton1" ng-click="delete(email._id)">
+                  DELETE
+               </md-button>
            </div>  
    </div>
-
+</div>
 
 
 

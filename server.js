@@ -1,6 +1,7 @@
 const express=require('express');
 const morgan=require('Morgan')
 const mongoose=require('mongoose');
+let email=require('./app/model/email.js');
 const bodyparser=require('body-parser');
 const sendgrid=require("@sendgrid/mail");
 const moment=require('moment');

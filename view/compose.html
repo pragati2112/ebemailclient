@@ -1,4 +1,5 @@
 
+
   <style>
 .size
 {
@@ -49,11 +50,11 @@
       <div layout="row" layout-align="start start" class="width100" ng-repeat="to in thisEmail.to">
          <div flex>
             <input type="email" name="to.email" id="to.email"  ng-model="to.email" class="width100" placeholder="email"/>
-         <!-- <span ng-show="myform.to.email.$touched && myform.to.email.$invalid">This is required.</span> -->
+          <span ng-show="myform.to.email.$touched && myform.to.email.$invalid">This is required.</span> 
          </div>
          <div flex>
             <input type="text" name="to.name" id="to.name"  ng-model="to.name" class="width100" placeholder="name" />
-         <!-- <span ng-show="myform.to.name.$touched && myform.to.name.$invalid">This is required.</span> -->
+          <span ng-show="myform.to.name.$touched && myform.to.name.$invalid">This is required.</span>
          </div>
       </div>
       <button class="width100" ng-click="addText()">+</button>
@@ -122,34 +123,3 @@
 </div>
 </form>
    
-   
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 

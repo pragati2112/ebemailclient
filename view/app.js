@@ -214,6 +214,199 @@ ebemailclient.controller('composeController',function($scope,$http,Notification,
 });
 
 
+//modalcontroller for index.html file
+ebemailclient.controller('modalController',function($scope,$http,Notification, $stateParams){
+    $scope.showPopup = false;
+    $scope.showModal = function(){
+        $scope.showPopup = true;
+    };
+    $scope.closeModal = function(){
+        $scope.showPopup = false;
+    };
+    $scope.thisEmail = {
+        from: { 
+                email:"",
+            
+    },
+        to: [
+            {
+                email: "",
+                name: "",
+            },
+         
+        ],
+         cc: [
+            {
+                name: "",
+                email: ""
+            },
+        ],
+        bcc: [
+            {
+                name: "",
+                email: ""
+            },
+        ], 
+        subject: "",
+        text: "",
+    };
+    
+    $scope.addText=function(){
+      $scope.thisEmail.to.push({"email":"","name":""});
+    }
+    $scope.addcc=function(){
+        $scope.thisEmail.cc.push({"email":"","name":""});
+      }
+    $scope.addbcc=function(){
+        $scope.thisEmail.bcc.push({"email":"","name":""});
+    }
+
+   $scope.sanitizeEmail= function (thisEmail){
+        var thisto =thisEmail.to;
+        var newto=[];
+
+        var thiscc=thisEmail.cc;
+        var newcc=[];
+
+        var thisbcc=thisEmail.bcc;
+        var newbcc=[];
+
+        thisto.forEach(function(element){
+            if(element.email && element.name !="")
+            {
+                newto.push(element);
+            }
+           
+        });
+        thiscc.forEach(function(element){
+            if(element.email && element.name !="")
+            {
+                newcc.push(element);
+            }
+        });
+        thisbcc.forEach(function(element){
+            if(element.email && element.name !="")
+            {
+                newbcc.push(element);
+            }
+        });
+
+     if(newto.length>0||newcc.length>0||newbcc.length>0)
+     {
+        thisEmail.to=newto;
+        thisEmail.cc=newcc;
+        thisEmail.bcc=newbcc;
+        return thisEmail;
+     }
+     else{
+         Notification("filled it properly!");
+     }
+    };
+    
+    $scope.cleanEmail= function (thisEmail){
+        var thisto =thisEmail.to;
+        var newto=[];
+        var thiscc=thisEmail.cc;
+        var newcc=[];
+
+        var thisbcc=thisEmail.bcc;
+        var newbcc=[];
+
+        thisto.forEach(function(element){
+            if(element.email=="" && element.name =="")
+            {
+                
+            }else if(element.email != ""){
+                newto.push(element);
+            }
+        });
+        thiscc.forEach(function(element){
+            if(element.email=="" && element.name =="")
+            {
+                
+            }else if(element.email != ""){
+                newcc.push(element);
+            }
+        });
+        thisbcc.forEach(function(element){
+            if(element.email=="" && element.name =="")
+            {
+                
+            }else if(element.email != ""){
+                newbcc.push(element);
+            }
+        });
+
+     if(newto.length>0||newcc.length>0||newbcc.length>0)
+     {
+        thisEmail.to=newto;
+        thisEmail.cc=newcc;
+        thisEmail.bcc=newbcc;
+        return thisEmail;
+     }
+     else{
+         Notification("filled it properly!");
+     }
+
+    };
+
+    if($stateParams.thisEmail){
+        $scope.thisEmail = $stateParams.thisEmail;    
+    }
+
+   //on send button
+   //input- thisEmail, expected output-sent succesfully.
+    $scope.send = function(thisEmail){
+        $http({
+            method:'POST',
+            url:'http://localhost:8888/api/send',
+            data: thisEmail,
+        })
+        .then(function(response) {
+            console.log(response);
+         
+            if(response!=null)
+            {
+            Notification("sent!");
+            }else{
+            Notification("not sent");
+            }
+        })
+        .catch(function(error){
+            Notification("Mail not sent!Try another time.");
+            console.log(error);       
+        })
+
+    };
+
+      //on save button
+      //input-thisEmail , expected output- saved successfully.
+        $scope.saveemail = function (thisEmail) {
+            thisEmail = $scope.cleanEmail(thisEmail);
+            console.log(thisEmail);
+            $http({
+                method:'POST',
+                url:'http://localhost:8888/api/save',
+                data: thisEmail,
+            })
+            .then(function(response) {
+                console.log(response);
+                if(response!=null)
+                {
+                 Notification('Saved succesfully');
+                }else{
+                 Notification("not saved");
+                }
+            })
+            .catch(function(error){
+                console.log(error);
+                Notification("mail not saved!");
+            });  
+        };
+
+});
+
+
 //draftscontroller for draft.html file(api call for get all the saved emails)
 ebemailclient.controller('draftsController',function($scope,$http,$state,Notification){
     function draftemails(){  
@@ -245,8 +438,29 @@ $scope.open=function(thisEmail)
     $state.go('send', {thisEmail: thisEmail });
 }
 
-});
 
+$scope.delete=function(id)
+{ 
+    $http({
+        method:"DELETE",
+        url:'http://localhost:8888/api/delete/'+id,
+        
+    })
+    .then(function(response){
+        console.log(response);
+        if(response!=null){
+         Notification("Deleted");   
+        }else{
+       Notification("Mail is not deleted!");   
+        }
+    })
+    .catch(function(error){
+        console.log(error);
+        Notification("Mail is not deleted!"); 
+    });
+    draftemails();
+};
+});
 //sentcontroller for sent.html file(api for get all the sent emails)
 //expected output-get all the sent emails data.
 ebemailclient.controller('sentController',function($scope,$http,$state,Notification){
@@ -346,7 +560,7 @@ ebemailclient.controller('viewemailController',function($scope,$state,$statePara
 
  //Routing
 ebemailclient.config(function($stateProvider,$urlRouterProvider){ 
-    $urlRouterProvider.otherwise('/send');   //if url is not matched with given urls then redirect to the 'send' state. 
+    $urlRouterProvider.otherwise('/sent');   //if url is not matched with given urls then redirect to the 'sent' state. 
     $stateProvider                         
         .state('send',{
             url:'/send',
